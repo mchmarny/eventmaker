@@ -27,7 +27,6 @@ var (
 	projectID  = flag.String("project", "", "GCP Project ID")
 	registryID = flag.String("registry", "", "Cloud IoT Registry ID (short form)")
 	region     = flag.String("region", "us-central1", "GCP Region")
-	topic      = flag.String("topic", "iot-demo", "Event topic to which data will be published")
 	numEvents  = flag.Int("events", 10, "Number of events to sent")
 	eventSrc   = flag.String("src", "", "Event source")
 	certsCA    = flag.String("ca", "root-ca.pem", "Download https://pki.google.com/roots.pem")
@@ -115,7 +114,7 @@ func main() {
 		data := makeEvent()
 		log.Printf("Publishing: %v", data)
 		token := client.Publish(
-			*topic,
+			fmt.Sprintf("/devices/%v/config", *deviceID),
 			0,
 			false,
 			data)
