@@ -31,10 +31,10 @@ To execute the sample run the following command
 bin/iot-code-client --project "your project id" \
                     --region "registry region e.g. us-central1" \
                     --registry "your registry name" \
-				    --device "your device ID" \
+		    --device "your device ID" \
                     --ca "CA key [root-ca.pem]" \
                     --key "Your private key [device.key.pem]" \
-				    --events "Number of events you want to send [3]" \
+		    --events "Number of events you want to send [3]" \
                     --src "Source of the events e.g. knative-client"
 
 ```
