@@ -28,7 +28,7 @@ var (
 	registryID = flag.String("registry", "", "Cloud IoT Registry ID (short form)")
 	region     = flag.String("region", "us-central1", "GCP Region")
 	numEvents  = flag.Int("events", 10, "Number of events to sent")
-	eventSrc   = flag.String("src", "", "Event source")
+	eventSrc   = flag.String("src", "knative-demo-client", "Event source")
 	certsCA    = flag.String("ca", "root-ca.pem", "Download https://pki.google.com/roots.pem")
 	privateKey = flag.String("key", "", "Path to private key file")
 )
