@@ -1,35 +1,19 @@
-
-# Go parameters
-BINARY_NAME="knative-iot-client"
-PROJECT="s9-demo"
-REGISSTRY="knative-demo"
-DEVICE="knative-demo-client"
-REGION="us-central1"
-TOPIC_DATA="knative-iot-demo"
-TOPIC_DEVICE="knative-iot-demo-device"
-CA_KEY="root-ca.pem"
-DEVICE_KEY="device.key.pem"
-NUMBER_OF_EVENTS_TO_SEND=3
-EVENT_SRC="next18-demo-client"
-
 all: test
 build:
-	go build -o ./bin/$(BINARY_NAME) -v
+	go build -o ./bin/eventmaker -v
 
 build-linux:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o ./bin/$(BINARY_NAME)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o ./bin/eventmaker
 
 clean:
 	go clean
-	rm -f ./bin/$(BINARY_NAME)
+	rm -f ./bin/eventmaker
 
 run:
-	go run *.go --project $(PROJECT) --region $(REGION) --registry $(REGISSTRY) \
-				--device $(DEVICE) --ca $(CA_KEY) --key $(DEVICE_KEY) \
-				--events $(NUMBER_OF_EVENTS_TO_SEND) --src $(EVENT_SRC)
-
-deps:
 	go mod tidy
+	go run *.go --project=${GCP_PROJECT} --region=us-central1 --registry=demo-reg \
+				--device=demo-device-1 --ca="root-ca.pem" --key="device.key.pem" \
+				--src="demo-client" --freq="3s" --metric="my-metric" --range="0.01-10.00"
 
 certs:
 	openssl req -x509 -nodes -newkey rsa:2048 \
@@ -38,3 +22,30 @@ certs:
 				-days 365 \
 				-subj "/CN=unused"
 	curl https://pki.google.com/roots.pem > ./root-ca.pem
+
+
+setup:
+	gcloud pubsub topics create demo-iot-events
+
+	gcloud iot registries create demo-reg \
+		--project=${GCP_PROJECT} \
+		--region=us-central1 \
+		--event-notification-config=topic=demo-iot-events
+
+	gcloud iot devices create demo-device-1 \
+		--project=${GCP_PROJECT} \
+		--region=us-central1 \
+		--registry=demo-reg \
+		--public-key path=device.crt.pem,type=rs256
+
+cleanup:
+	gcloud iot devices delete demo-device-1 \
+		--project=${GCP_PROJECT} \
+		--registry=demo-reg \
+		--region=us-central1
+
+	gcloud iot registries delete demo-reg \
+		--project=${GCP_PROJECT} \
+		--region=us-central1
+
+	gcloud beta pubsub topics delete demo-iot-events
