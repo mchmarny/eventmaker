@@ -1,9 +1,7 @@
 all: test
 build:
 	go build -o ./bin/eventmaker -v
-
-build-linux:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o ./bin/eventmaker
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o ./bin/eventmaker-linux
 
 clean:
 	go clean
