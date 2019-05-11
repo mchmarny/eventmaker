@@ -20,7 +20,8 @@ certs:
 				-keyout device.key.pem \
 				-out device.crt.pem \
 				-days 365 \
-				-subj "/CN=unused"
+				-subj "/CN=demo"
+
 	curl https://pki.google.com/roots.pem > ./root-ca.pem
 
 

@@ -15,7 +15,7 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	MQTT "github.com/eclipse/paho.mqtt.golang"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -46,10 +46,9 @@ func main() {
 	log.Println("Loading Google's roots...")
 	certpool := x509.NewCertPool()
 	pemCerts, err := ioutil.ReadFile(*certsCA)
-	if err == nil {
-		certpool.AppendCertsFromPEM(pemCerts)
-	}
+	failOnErr(err)
 
+	certpool.AppendCertsFromPEM(pemCerts)
 	config := &tls.Config{
 		RootCAs:            certpool,
 		ClientAuth:         tls.NoClientCert,
@@ -66,15 +65,13 @@ func main() {
 		*deviceID,
 	)
 
-	log.Println("Creating MQTT client options...")
-	opts := MQTT.NewClientOptions()
-
+	opts := mqtt.NewClientOptions()
 	broker := fmt.Sprintf("ssl://%v:%v", host, port)
 	log.Printf("Broker '%v'", broker)
 
 	opts.AddBroker(broker)
 	opts.SetClientID(clientID).SetTLSConfig(config)
-	opts.SetUsername("using-keys-instead")
+	opts.SetUsername("using-key")
 
 	token := jwt.New(jwt.SigningMethodRS256)
 	token.Claims = jwt.StandardClaims{
@@ -85,15 +82,11 @@ func main() {
 
 	log.Println("Loading private key...")
 	keyBytes, err := ioutil.ReadFile(*privateKey)
-	if err != nil {
-		log.Fatal(err)
-	}
+	failOnErr(err)
 
 	log.Println("Parsing private key...")
 	key, err := jwt.ParseRSAPrivateKeyFromPEM(keyBytes)
-	if err != nil {
-		log.Fatal(err)
-	}
+	failOnErr(err)
 
 	log.Println("Signing token")
 	tokenString, err := token.SignedString(key)
@@ -104,34 +97,22 @@ func main() {
 	log.Println("Setting password...")
 	opts.SetPassword(tokenString)
 
-	opts.SetDefaultPublishHandler(func(client MQTT.Client, msg MQTT.Message) {
-		fmt.Printf("[handler] Topic: %v\n", msg.Topic())
-		fmt.Printf("[handler] Payload: %v\n", msg.Payload())
+	opts.SetDefaultPublishHandler(func(client mqtt.Client, msg mqtt.Message) {
+		log.Printf("[handler] Topic: %v\n", msg.Topic())
+		log.Printf("[handler] Payload: %v\n", msg.Payload())
 	})
 
 	log.Println("Connecting...")
-	client := MQTT.NewClient(opts)
+	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		log.Fatal(token.Error())
 	}
 
 	log.Println("Publishing messages...")
-
-	// event freq
 	freq, err := time.ParseDuration(*eventFreq)
-	if err != nil {
-		log.Fatal(err)
-	}
+	failOnErr(err)
 
-	rangeParts := strings.Split(*metricRange, "-")
-	if len(rangeParts) != 2 {
-		log.Fatal(errorInvalidMetricRange)
-	}
-	min, minErr := strconv.ParseFloat(rangeParts[0], 64)
-	max, maxErr := strconv.ParseFloat(rangeParts[1], 64)
-	if minErr != nil || maxErr != nil {
-		log.Fatal(errorInvalidMetricRange)
-	}
+	min, max := mustParseRange(*metricRange)
 
 	for {
 		data := makeEvent(min, max)
@@ -146,6 +127,29 @@ func main() {
 		}
 		time.Sleep(freq)
 	}
+
+}
+
+func failOnErr(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func mustParseRange(r string) (min, max float64) {
+
+	rangeParts := strings.Split(r, "-")
+	if len(rangeParts) != 2 {
+		log.Fatal(errorInvalidMetricRange)
+	}
+
+	min, minErr := strconv.ParseFloat(rangeParts[0], 64)
+	max, maxErr := strconv.ParseFloat(rangeParts[1], 64)
+	if minErr != nil || maxErr != nil {
+		log.Fatal(errorInvalidMetricRange)
+	}
+
+	return min, max
 
 }
 
