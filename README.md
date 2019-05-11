@@ -1,4 +1,4 @@
-# iot-event maker
+# iot-event-maker
 
 IoT Core event generator. In this demo we will create and configure Google Cloud IOT Core registry, configure a device on that gateway, and send mocked events to that device which will persist them into CLoud PubSub topic which we will create for this demo.
 
