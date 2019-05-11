@@ -64,6 +64,7 @@ func main() {
 		*registryID,
 		*deviceID,
 	)
+
 	log.Printf("Client '%s'", clientID)
 
 	opts := mqtt.NewClientOptions()
@@ -72,7 +73,7 @@ func main() {
 
 	opts.AddBroker(broker)
 	opts.SetClientID(clientID).SetTLSConfig(config)
-	opts.SetUsername("using-key")
+	opts.SetUsername("unused")
 
 	token := jwt.New(jwt.SigningMethodRS256)
 	token.Claims = jwt.StandardClaims{
@@ -99,8 +100,7 @@ func main() {
 	opts.SetPassword(tokenString)
 
 	opts.SetDefaultPublishHandler(func(client mqtt.Client, msg mqtt.Message) {
-		log.Printf("[handler] Topic: %v\n", msg.Topic())
-		log.Printf("[handler] Payload: %v\n", msg.Payload())
+		log.Printf("[Publish]: %v - %v", msg.Topic(), msg.Payload())
 	})
 
 	log.Println("Connecting...")
@@ -119,7 +119,7 @@ func main() {
 		data := makeEvent(min, max)
 		log.Printf("Publishing: %v", data)
 		token := client.Publish(
-			fmt.Sprintf("/devices/%v/config", *deviceID),
+			fmt.Sprintf("/devices/%v/events", *deviceID),
 			0,
 			false,
 			data)
