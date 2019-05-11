@@ -78,6 +78,8 @@ go run *.go --project=${GCP_PROJECT} --region=us-central1 --registry=demo-reg \
 			--src="demo-client" --metric="my-metric" --range="0.01-10.00" --freq="3s"
 ```
 
+> if you don't have `go` installed locally you can run the latest release binaries published here https://github.com/mchmarny/iot-event-maker/releases
+
 Besides references to the IOT Core resources we created above, there are a few parameters worth explaining:
 
 * `--src` - Unique name of the device from which you are sending events. This is used to identify the specific sender of events in case you are running multiple clients (e.g. `my-laptop`)

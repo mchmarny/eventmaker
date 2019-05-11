@@ -10,10 +10,9 @@ clean:
 	rm -f ./bin/eventmaker
 
 run:
-	go mod tidy
-	go run *.go --project=${GCP_PROJECT} --region=us-central1 --registry=demo-reg \
-				--device=demo-device-1 --ca="root-ca.pem" --key="device.key.pem" \
-				--src="demo-client" --freq="3s" --metric="my-metric" --range="0.01-10.00"
+	bin/eventmaker --project=${GCP_PROJECT} --region=us-central1 --registry=demo-reg \
+		--device=demo-device-1 --ca="root-ca.pem" --key="device.key.pem" \
+		--src="demo-client" --freq="3s" --metric="my-metric" --range="0.01-10.00"
 
 certs:
 	openssl req -x509 -nodes -newkey rsa:2048 \
