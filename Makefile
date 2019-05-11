@@ -10,17 +10,16 @@ clean:
 	rm -f ./bin/eventmaker
 
 run:
-	bin/eventmaker --project=${GCP_PROJECT} --region=us-central1 --registry=demo-reg \
-		--device=demo-device-1 --ca="root-ca.pem" --key="device.key.pem" \
-		--src="demo-client" --freq="3s" --metric="my-metric" --range="0.01-10.00"
+	go run *.go --project=${GCP_PROJECT} --region=us-central1 --registry=demo-reg \
+		--device=demo-device-1 --ca=root-ca.pem --key=device1-private.pem \
+		--src=model-client --freq=2s --metric=friction --range=0.01-2.00
 
 certs:
 	openssl req -x509 -nodes -newkey rsa:2048 \
-				-keyout device.key.pem \
-				-out device.crt.pem \
-				-days 365 \
-				-subj "/CN=demo"
-
+			-keyout device1-private.pem \
+			-out device1-public.pem \
+			-days 365 \
+			-subj "/CN=demo"
 	curl https://pki.google.com/roots.pem > ./root-ca.pem
 
 
@@ -36,7 +35,7 @@ setup:
 		--project=${GCP_PROJECT} \
 		--region=us-central1 \
 		--registry=demo-reg \
-		--public-key path=device.crt.pem,type=rs256
+		--public-key path=device1-public.pem,type=rsa-x509-pem
 
 cleanup:
 	gcloud iot devices delete demo-device-1 \

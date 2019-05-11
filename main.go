@@ -64,6 +64,7 @@ func main() {
 		*registryID,
 		*deviceID,
 	)
+	log.Printf("Client '%s'", clientID)
 
 	opts := mqtt.NewClientOptions()
 	broker := fmt.Sprintf("ssl://%v:%v", host, port)
