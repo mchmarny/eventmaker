@@ -8,9 +8,9 @@ clean:
 	rm -f ./bin/eventmaker
 
 run:
-	go run *.go --project=${GCP_PROJECT} --region=us-central1 --registry=demo-reg \
-		--device=demo-device-1 --ca=root-ca.pem --key=device1-private.pem \
-		--src=model-client --freq=2s --metric=friction --range=0.01-2.00
+	go run *.go --project=${GCP_PROJECT} --region=us-central1 --registry=automodel-reg \
+		--device=automodel-device-1 --ca=root-ca.pem --key=device1-private.pem \
+		--src=comp-client --freq=2s --metric=comp-stats --range=0.01-2.00
 
 certs:
 	openssl req -x509 -nodes -newkey rsa:2048 \

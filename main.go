@@ -3,20 +3,15 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
-	"strconv"
-	"strings"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	uuid "github.com/satori/go.uuid"
 )
 
 const (
@@ -109,11 +104,9 @@ func main() {
 		log.Fatal(token.Error())
 	}
 
-	log.Println("Publishing messages...")
+	min, max := mustParseRange(*metricRange)
 	freq, err := time.ParseDuration(*eventFreq)
 	failOnErr(err)
-
-	min, max := mustParseRange(*metricRange)
 
 	for {
 		data := makeEvent(min, max)
@@ -135,43 +128,4 @@ func failOnErr(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func mustParseRange(r string) (min, max float64) {
-
-	rangeParts := strings.Split(r, "-")
-	if len(rangeParts) != 2 {
-		log.Fatal(errorInvalidMetricRange)
-	}
-
-	min, minErr := strconv.ParseFloat(rangeParts[0], 64)
-	max, maxErr := strconv.ParseFloat(rangeParts[1], 64)
-	if minErr != nil || maxErr != nil {
-		log.Fatal(errorInvalidMetricRange)
-	}
-
-	return min, max
-
-}
-
-func makeEvent(min, max float64) string {
-
-	event := struct {
-		SourceID    string    `json:"source_id"`
-		EventID     string    `json:"event_id"`
-		EventTs     time.Time `json:"event_ts"`
-		MetricLabel string    `json:"label"`
-		MetricValue float64   `json:"metric"`
-	}{
-		SourceID:    *eventSrc,
-		EventID:     fmt.Sprintf("%s-%s", idPrefix, uuid.NewV4().String()),
-		EventTs:     time.Now().UTC(),
-		MetricLabel: *metricLabel,
-		MetricValue: min + rand.Float64()*(max-min),
-	}
-
-	data, _ := json.Marshal(event)
-
-	return string(data)
-
 }

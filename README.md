@@ -1,6 +1,6 @@
 # iot-event-maker
 
-IoT Core event generator. In this demo we will create and configure Google Cloud IOT Core registry, configure a device on that gateway, and send mocked events to that device which will persist them into CLoud PubSub topic which we will create for this demo.
+IoT Core event generator. In this demo we will create and configure Google Cloud IOT Core registry, configure its device, and send mocked events based on host's CPU/Mem/Load stats to that device which will persist them into CLoud PubSub topic which we will create for this demo.
 
 ## Configure IoT Core
 
@@ -79,6 +79,29 @@ go run *.go --project=${GCP_PROJECT} --region=us-central1 --registry=demo-reg \
 ```
 
 > if you don't have `go` installed locally you can run the latest release binaries published here https://github.com/mchmarny/iot-event-maker/releases
+
+After few lines of configuration output, you should see `eventmaker` posting to IOT Core
+
+```shell
+2019/05/12 14:43:26 Publishing: {"source_id":"demo-client","event_id":"eid-6ae3ab0d-a4d1-40a7-803c-f1e5158fe2b9","event_ts":"2019-05-12T21:43:26.303646Z","label":"my-metric","memFree":73.10791015625,"cpuFree":3500,"loadAvg1":2.65,"loadAvg5":2.88,"loadAvg15":3.46,"randomValue":1.2132739730794428}
+```
+
+The JSON payload in each one of these events looks something like this:
+
+```json
+{
+    "source_id":"demo-client",
+    "event_id":"eid-6ae3ab0d-a4d1-40a7-803c-f1e5158fe2b9",
+    "event_ts":"2019-05-12T21:43:26.303646Z",
+    "label":"my-metric",
+    "memFree":73.10791015625,
+    "cpuFree":3500,
+    "loadAvg1":2.65,
+    "loadAvg5":2.88,
+    "loadAvg15":3.46,
+    "randomValue":1.2132739730794428
+}
+```
 
 Besides references to the IOT Core resources we created above, there are a few parameters worth explaining:
 
