@@ -19,6 +19,15 @@ func NewLoadMetricProvider() *LoadMetricProvider {
 // LoadMetricProvider is a host system load metric provider
 type LoadMetricProvider struct{}
 
+// Describe provides provider info
+func (p *LoadMetricProvider) Describe() *event.MetricInfo {
+	return &event.MetricInfo{
+		Metric: "system load",
+		Type:   "float",
+		Unit:   "percent",
+	}
+}
+
 // Provide provides os ram memory metrics at duration interval
 func (p *LoadMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, src string, d time.Duration, h func(e *event.SimpleEvent)) error {
 	defer wg.Done()
@@ -51,7 +60,7 @@ func getLoadMetric(src string) (e *event.SimpleEvent, err error) {
 		ID:    uuid.NewV4().String(),
 		SrcID: src,
 		Time:  time.Now().UTC().Unix(),
-		Label: "System Load",
+		Label: "system load",
 		Unit:  "percent",
 		Value: mp.Load1,
 	}

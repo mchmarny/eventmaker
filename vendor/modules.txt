@@ -36,8 +36,7 @@ github.com/shirou/gopsutil/mem
 # github.com/stretchr/testify v1.5.1
 ## explicit
 github.com/stretchr/testify/assert
-# golang.org/x/net v0.0.0-20200513185701-a91f0712d120
-## explicit
+# golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
 golang.org/x/net/websocket

@@ -20,8 +20,8 @@ run: mod
 
 .PHONY: build
 build: mod
-	go build -o ./bin/eventmaker -v
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o ./bin/eventmaker-linux
+	go build -o ./bin/eventmaker ./cmd
+	# CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o ./bin/eventmaker-linux
 
 .PHONY: lint
 lint:

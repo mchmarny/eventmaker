@@ -11,7 +11,6 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/shirou/gopsutil v2.20.4+incompatible
 	github.com/stretchr/testify v1.5.1
-	golang.org/x/net v0.0.0-20200513185701-a91f0712d120 // indirect
 	golang.org/x/sys v0.0.0-20200515095857-1151b9dac4a9 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 )

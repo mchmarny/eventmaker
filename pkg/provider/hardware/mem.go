@@ -19,6 +19,15 @@ func NewRAMMetricProvider() *RAMMetricProvider {
 // RAMMetricProvider is a host RAM metric provider
 type RAMMetricProvider struct{}
 
+// Describe provides provider info
+func (p *RAMMetricProvider) Describe() *event.MetricInfo {
+	return &event.MetricInfo{
+		Metric: "swap memory",
+		Type:   "float",
+		Unit:   "percent",
+	}
+}
+
 // Provide provides os ram memory metrics at duration interval
 func (p *RAMMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, src string, d time.Duration, h func(e *event.SimpleEvent)) error {
 	defer wg.Done()
@@ -51,7 +60,7 @@ func getRAMMetric(src string) (e *event.SimpleEvent, err error) {
 		ID:    uuid.NewV4().String(),
 		SrcID: src,
 		Time:  time.Now().UTC().Unix(),
-		Label: "Swap Memory",
+		Label: "swap memory",
 		Unit:  "percent",
 		Value: mp.UsedPercent,
 	}

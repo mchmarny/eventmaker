@@ -11,7 +11,7 @@ import (
 
 	"github.com/amenzhinsky/iothub/iotdevice"
 
-	iotmqtt "github.com/amenzhinsky/iothub/iotdevice/transport/mqtt"
+	mqtt "github.com/amenzhinsky/iothub/iotdevice/transport/mqtt"
 	"github.com/pkg/errors"
 
 	"github.com/mchmarny/eventmaker/pkg/event"
@@ -20,14 +20,18 @@ import (
 )
 
 var (
-	p provider.Provider = hw.NewCPUMetricProvider()
-	// p = hw.NewLoadMetricProvider()
-	// p = hw.NewRAMMetricProvider()
+	ps = []provider.Provider{
+		hw.NewCPUMetricProvider(),
+		hw.NewLoadMetricProvider(),
+		hw.NewRAMMetricProvider(),
+	}
 
 	freq = time.Duration(1 * time.Second)
 )
 
 func main() {
+	// load providers
+
 	// client
 	c, err := newClient()
 	if err != nil {
@@ -42,7 +46,10 @@ func main() {
 	wg.Add(1)
 
 	// send
-	go send(ctx, wg, c)
+	for _, p := range ps {
+		log.Printf("metric: %+v", p.Describe())
+		go send(ctx, wg, c, p)
+	}
 
 	// wait
 	<-sigChan
@@ -50,7 +57,7 @@ func main() {
 	wg.Wait()
 }
 
-func send(ctx context.Context, wg *sync.WaitGroup, c *iotdevice.Client) {
+func send(ctx context.Context, wg *sync.WaitGroup, c *iotdevice.Client, p provider.Provider) {
 	err := p.Provide(ctx, wg, "client-1", freq, func(e *event.SimpleEvent) {
 		data, _ := json.Marshal(e)
 		log.Printf("%s", string(data))
@@ -71,7 +78,7 @@ func send(ctx context.Context, wg *sync.WaitGroup, c *iotdevice.Client) {
 
 func newClient() (*iotdevice.Client, error) {
 	client, err := iotdevice.NewFromConnectionString(
-		iotmqtt.New(), os.Getenv("DEV1_CONN"),
+		mqtt.New(), os.Getenv("DEV1_CONN"),
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "error parsing connection from env IOTHUB_DEVICE_CONNECTION_STRING")

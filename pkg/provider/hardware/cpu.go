@@ -19,6 +19,15 @@ func NewCPUMetricProvider() *CPUMetricProvider {
 // CPUMetricProvider is a host CPU metric provider
 type CPUMetricProvider struct{}
 
+// Describe provides provider info
+func (p *CPUMetricProvider) Describe() *event.MetricInfo {
+	return &event.MetricInfo{
+		Metric: "cpu utilization",
+		Type:   "float",
+		Unit:   "percent",
+	}
+}
+
 // Provide provides os process events
 func (p *CPUMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, src string, d time.Duration, h func(e *event.SimpleEvent)) error {
 	defer wg.Done()
@@ -50,7 +59,7 @@ func getCPUMetric(src string, d time.Duration) (e *event.SimpleEvent, err error)
 		ID:    uuid.NewV4().String(),
 		SrcID: src,
 		Time:  time.Now().UTC().Unix(),
-		Label: "CPU Utilization",
+		Label: "cpu utilization",
 		Unit:  "percent",
 		Value: mp[0],
 	}
