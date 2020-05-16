@@ -29,7 +29,7 @@ Create the device in the identity registry
 ```shell
 az iot hub device-identity create \
   --hub-name $HUB_NAME \
-  --device-id "${HUB_NAME}-device-1" 
+  --device-id "${HUB_NAME}-device-1"
 ```
 
 Retrieve device connection string
@@ -47,15 +47,22 @@ export DEV1_CONN=$(az iot hub device-identity show-connection-string \
 make run
 ``` 
 
+Your events will be published to Azure Service Bus. To find the connection string
+
+```shell
+az iot hub show \
+  --name $HUB_NAME \
+  --query "properties.eventHubEndpoints.events.endpoint" \
+  -o tsv
+```
+
 
 ## cleanup 
 
 Delete device 
 
 ```shell
-az iot hub device-identity delete \
-  --hub-name $HUB_NAME \
-  --device-id "${HUB_NAME}-device-1" 
+az iot hub device-identity delete --hub-name $HUB_NAME --device-id "${HUB_NAME}-device-1"
 ```
 
 Delete hub

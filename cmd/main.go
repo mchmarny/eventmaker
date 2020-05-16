@@ -71,7 +71,7 @@ func send(ctx context.Context, wg *sync.WaitGroup, c *iotdevice.Client) {
 
 func newClient() (*iotdevice.Client, error) {
 	client, err := iotdevice.NewFromConnectionString(
-		iotmqtt.New(), os.Getenv("IOTHUB_DEVICE_CONNECTION_STRING"),
+		iotmqtt.New(), os.Getenv("DEV1_CONN"),
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "error parsing connection from env IOTHUB_DEVICE_CONNECTION_STRING")
