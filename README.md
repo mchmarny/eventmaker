@@ -53,13 +53,33 @@ make build
 And start sending 
 
 ```shell
-bin/eventmaker
+bin/eventmaker --metric "temp|celsius|float|0:72.1|3s"
 ```
 
-Few defaults you can change using environment variables:
+Where `--metric` is the content of the metric you want to send. For example, the above metric would generate an event similar to this one every 3 seconds
 
-* `CLIENT_ID` - device ID associated with this client (default: `client-1`)
-* `SEND_FREQ` - frequency of how often the events are sent (default: `1s`)
+```json
+{
+    "id":"fdf612b9-34a5-445e-9941-59c404ea9bef",
+    "src_id":"client-1",
+    "time":1589745397,
+    "label":"temp",
+    "data":70.79129651786347,
+    "unit":"celsius"
+}
+```
+
+The format of metrics are as follow 
+
+`<label>|<unit>|<type of content in data field>|<range of data to generate>|<frequency>`
+
+The supported types are `int`, `float`, and `bool` as well as most common derivates of these (e.g. `int64` or `float32`).
+
+The `ranges` follow `min:max` format. So int in between 0 and 100 would be formatted as `0:100`. This way you can include negative numbers. 
+
+Finally, the `frequency` follows standard go `time.Duration` format (e.g. `1s` for every second, `2m` for every 2 minutes, or `3h` for every 3 hours)
+
+The one defaults you set using environment variables is the device name (`DEV_NAME`) which is the device ID associated with this client (default: `device-1`)
 
 To find the Azure Service Bus here these events will be published:
 

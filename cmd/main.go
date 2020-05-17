@@ -18,7 +18,7 @@ var (
 	// Version will be overritten during build
 	Version = "v0.0.1-default"
 
-	clientID      = env.MustGetEnvVar("CLIENT_ID", "client-1")
+	deviceID      = env.MustGetEnvVar("DEV_NAME", "device-1")
 	clientConnStr = env.MustGetEnvVar("CONN_STR", "")
 
 	args = os.Args[1:]
@@ -55,7 +55,7 @@ func main() {
 			client:   c,
 			provider: p,
 			request: &event.InvokerRequest{
-				Source:    clientID,
+				Source:    deviceID,
 				Context:   ctx,
 				WaitGroup: wg,
 				Frequency: p.GetParam().Frequency,
