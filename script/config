@@ -1,0 +1,8 @@
+#!/bin/bash
+
+NUMBER_OF_INSTANCES=5
+METRIC_TEMPLATE="temp|celsius|float|0:72.1|3s"
+
+# don't change these unless you know what you are doing 
+DEVICE_NAME_PREFIX="eventmaker-deivce"
+IMAGE_VERSION="v0.1.1"

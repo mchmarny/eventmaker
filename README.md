@@ -4,7 +4,7 @@ Creates and configures Azure IoT Hub with virtual devices and sends mocked event
 
 > Note, this is still work in progress
 
-## setup 
+## setup
 
 Export the name of your Azure IoT Hub and an example device
 
@@ -13,7 +13,7 @@ export HUB_NAME="cloudylabs"
 export DEV_NAME="device-1"
 ```
 
-## hub 
+### hub 
 
 > assumes you have resource group and location defaults set 
 
@@ -23,7 +23,7 @@ Create a IoT Hub with a standard pricing tier
 az iot hub create --name $HUB_NAME --sku S1
 ```
 
-## device 
+### device 
 
 Create the device in the identity registry 
 
@@ -42,21 +42,23 @@ export CONN_STR=$(az iot hub device-identity show-connection-string \
   -o tsv)
 ```
 
+
+
 ## run 
 
-Build the executable 
+To run the pre-build eventmaker images start by editing a couple variable in the [script/config](script/config) file:
 
 ```shell
-make build
-``` 
-
-And start sending 
-
-```shell
-bin/eventmaker --metric "temp|celsius|float|0:72.1|3s"
+NUMBER_OF_INSTANCES=5
+METRIC_TEMPLATE="temp|celsius|float|0:72.1|3s"
 ```
 
-Where `--metric` is the content of the metric you want to send. For example, the above metric would generate an event similar to this one every 3 seconds
+* `NUMBER_OF_INSTANCES` is the number of ACI instances you want to generate. The more instances, the more data will be submitted to Azure IoT Hub
+* `METRIC_TEMPLATE` is the template for mocking your data (see section on templates below)
+
+### templates
+
+`eventmaker` uses templates to mock the data that to submit to Azure IoT Code. For example, this template (`temp|celsius|float|68.9:72.1|3s`) would generate an event similar to this one every 3 seconds
 
 ```json
 {
@@ -81,6 +83,42 @@ Finally, the `frequency` follows standard go `time.Duration` format (e.g. `1s` f
 
 The one defaults you set using environment variables is the device name (`DEV_NAME`) which is the device ID associated with this client (default: `device-1`)
 
+### deploy to ACI
+
+Once you edit the [script/config](script/config) file to your liking, you can deploy the `eventmake` fleet
+
+```shell
+script/deploy
+```
+
+> The deployment is asynchronous so if you want to see the result open the Container Instances in Azure Portal. Note, may take a ~30 seconds for the first image to appear in the UI
+
+### undeploy
+
+To delete previously deployed instances
+
+```shell
+script/deploy
+```
+
+## run locally
+
+If you do make changes to the code you will need to rebuild the executable 
+
+```shell
+make build
+``` 
+
+To run `eventmaker` locally
+
+```shell
+bin/eventmaker --metric "temp|celsius|float|0:72.1|3s"
+```
+
+The one defaults you set using environment variables is the device name (`DEV_NAME`) which is the device ID associated with this client (default: `device-1`)
+
+## endpoints
+
 To find the Azure Service Bus here these events will be published:
 
 ```shell
@@ -94,6 +132,8 @@ az iot hub show \
 ## cleanup 
 
 Delete hub and all of it's devices 
+
+> Note, this will delete the IoT Hub itself and all of its devices 
 
 ```shell
 az iot hub delete --name $HUB_NAME

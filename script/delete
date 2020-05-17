@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -o errexit
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+
+for name in $(az container list --query "[?contains(name, '${DEVICE_NAME_PREFIX}')].name" --output tsv)
+do
+    az container delete --yes --name $name --only-show-errors
+done
+
