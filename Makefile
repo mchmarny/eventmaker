@@ -39,6 +39,11 @@ image: mod
 		-t "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)" .
 	docker push "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)"
 
+.PHONY: exec-image
+exec-image:
+	docker run -e CONN_STR=$(CONN_STR) -e DEV_NAME='test-run-1' \
+						 -ti mchmarny/eventmaker:v0.1.1 /eventmaker --metric 'temp|celsius|float|0:72.1|3s'
+
 .PHONY: lint
 lint:
 	golangci-lint run --timeout=3m

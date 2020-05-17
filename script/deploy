@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -o errexit
+
+az container create \
+    --name eventmaker1 \
+    --image mchmarny/eventmaker:v0.1.1 \
+    --cpu 1 \
+    --memory 1 \
+    --environment-variables CONN_STR=${CONN_STR} DEV_NAME='test-run-1' \
+    --command-line "/eventmaker --metric 'temp|celsius|float|0:72.1|3s'" \

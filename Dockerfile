@@ -10,9 +10,9 @@ ENV GO111MODULE=on
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -ldflags "-X main.Version=${VERSION}" \
-    -mod vendor -o ./service ./cmd
+    -mod vendor -o ./eventmaker ./cmd
 
 FROM gcr.io/distroless/static:nonroot
-COPY --from=builder /src/service .
+COPY --from=builder /src/eventmaker /
 
-ENTRYPOINT ["./service"]
+ENTRYPOINT ["/eventmaker"]
