@@ -32,17 +32,18 @@ func (p *CPUMetricProvider) Describe() *event.MetricInfo {
 func (p *CPUMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, src string, d time.Duration, h func(e *event.SimpleEvent)) error {
 	defer wg.Done()
 	ticker := time.NewTicker(d)
+	defer ticker.Stop()
+
 	for {
 		select {
+		case <-ctx.Done():
+			return nil
 		case <-ticker.C:
 			e, err := getCPUMetric(src, d)
 			if err != nil {
 				return err
 			}
 			h(e)
-		case <-ctx.Done():
-			ticker.Stop()
-			return nil
 		}
 	}
 }

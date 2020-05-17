@@ -6,10 +6,11 @@ Creates and configures Azure IoT Hub with virtual devices and sends mocked event
 
 ## setup 
 
-Export the name of your Azure IoT Hub
+Export the name of your Azure IoT Hub and an example device
 
 ```shell
 export HUB_NAME="cloudylabs"
+export DEV_NAME="device-1"
 ```
 
 ## hub 
@@ -29,14 +30,14 @@ Create the device in the identity registry
 ```shell
 az iot hub device-identity create \
   --hub-name $HUB_NAME \
-  --device-id "${HUB_NAME}-device-1"
+  --device-id $DEV_NAME
 ```
 
 Retrieve device connection string
 
 ```shell
-export DEV1_CONN=$(az iot hub device-identity show-connection-string \
-  --device-id "${HUB_NAME}-device-1" \
+export CONN_STR=$(az iot hub device-identity show-connection-string \
+  --device-id $DEV_NAME \
   --hub-name $HUB_NAME \
   -o tsv)
 ```
@@ -59,13 +60,7 @@ az iot hub show \
 
 ## cleanup 
 
-Delete device 
-
-```shell
-az iot hub device-identity delete --hub-name $HUB_NAME --device-id "${HUB_NAME}-device-1"
-```
-
-Delete hub
+Delete hub and all of it's devices 
 
 ```shell
 az iot hub delete --name $HUB_NAME

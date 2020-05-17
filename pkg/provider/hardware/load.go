@@ -32,11 +32,11 @@ func (p *LoadMetricProvider) Describe() *event.MetricInfo {
 func (p *LoadMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, src string, d time.Duration, h func(e *event.SimpleEvent)) error {
 	defer wg.Done()
 	ticker := time.NewTicker(d)
+	defer ticker.Stop()
 
 	for {
 		select {
 		case <-ctx.Done():
-			ticker.Stop()
 			return nil
 		case <-ticker.C:
 			e, err := getLoadMetric(src)

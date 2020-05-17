@@ -1,6 +1,8 @@
-RELEASE_VERSION = v0.1.1
-GIT_COMMIT      = $(shell git rev-list -1 HEAD)
-GIT_VERSION     = $(shell git describe --always --abbrev=7 --dirty)
+GIT_COMMIT      =$(shell git rev-list -1 HEAD)
+SERVICE_NAME    =eventmaker
+RELEASE_VERSION =v0.1.1
+RELEASE_COMMIT  =$(RELEASE_VERSION)-$(GIT_COMMIT)
+DOCKER_USERNAME =$(DOCKER_USER)
 
 all: test
 
@@ -20,8 +22,19 @@ run: mod
 
 .PHONY: build
 build: mod
-	go build -o ./bin/eventmaker ./cmd
-	# CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o ./bin/eventmaker-linux
+	GOOS=darwin GOARCH=amd64 \
+    go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
+    -mod vendor -o ./bin/$(SERVICE_NAME) ./cmd
+
+.PHONY: exec
+exec:
+	bin/eventmaker
+
+.PHONY: image
+image: mod
+	docker build --build-arg VERSION=$(RELEASE_COMMIT) \
+		-t "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)" .
+	docker push "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)"
 
 .PHONY: lint
 lint:
