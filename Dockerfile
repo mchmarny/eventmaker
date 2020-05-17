@@ -8,7 +8,7 @@ ARG VERSION=v0.0.1-default
 ENV VERSION=$VERSION
 ENV GO111MODULE=on
 
-RUN GOOS=linux GOARCH=amd64 \
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -ldflags "-X main.Version=${VERSION}" \
     -mod vendor -o ./service ./cmd
 

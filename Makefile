@@ -18,16 +18,20 @@ test: mod
 
 .PHONY: run
 run: mod
-	go run cmd/main.go
+	go run cmd/*.go --metric "temp|celsius|float|0:72.1|3s" \
+									--metric "speed|kmh|int|0:210|1s" \
+									--metric "friction|coefficient|float|0:1|1s"
 
 .PHONY: build
 build: mod
-	go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
+	CGO_ENABLED=0 go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
     -mod vendor -o ./bin/$(SERVICE_NAME) ./cmd
 
 .PHONY: exec
 exec:
-	bin/eventmaker
+	bin/eventmaker --metric "temp|celsius|float|0:72.1|3s" \
+								 --metric "speed|kmh|int|0:210|1s" \
+								 --metric "friction|coefficient|float|0:1|1s"
 
 .PHONY: image
 image: mod

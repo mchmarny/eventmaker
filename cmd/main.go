@@ -6,10 +6,9 @@ import (
 	"os"
 	"os/signal"
 	"sync"
-	"time"
 
 	"github.com/mchmarny/eventmaker/pkg/event"
-	"github.com/mchmarny/eventmaker/pkg/provider/hardware"
+	"github.com/mchmarny/eventmaker/pkg/provider"
 	"github.com/mchmarny/gcputil/env"
 )
 
@@ -19,24 +18,20 @@ var (
 	// Version will be overritten during build
 	Version = "v0.0.1-default"
 
-	freqStr       = env.MustGetEnvVar("SEND_FREQ", "1s")
 	clientID      = env.MustGetEnvVar("CLIENT_ID", "client-1")
 	clientConnStr = env.MustGetEnvVar("CONN_STR", "")
+
+	args = os.Args[1:]
 )
 
 func main() {
 	logger.Printf("version: %s", Version)
-
-	freq, err := time.ParseDuration(freqStr)
-	if err != nil {
-		log.Fatalf("invalid send frequency value (SEND_FREQ): %s", freqStr)
-	}
+	logger.Printf("args: %v", args)
 
 	// providers
-	ps := []event.Provider{
-		hardware.NewCPUMetricProvider(),
-		hardware.NewLoadMetricProvider(),
-		hardware.NewRAMMetricProvider(),
+	ps, err := provider.ParseProviders(args)
+	if err != nil {
+		log.Fatalf("error parsing providers: %v", err)
 	}
 	logger.Printf("loaded %d metric proviers", len(ps))
 
@@ -63,7 +58,7 @@ func main() {
 				Source:    clientID,
 				Context:   ctx,
 				WaitGroup: wg,
-				Frequency: freq,
+				Frequency: p.GetParam().Frequency,
 			},
 		}
 		go send(j)
