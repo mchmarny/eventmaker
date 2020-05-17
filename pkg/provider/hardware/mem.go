@@ -1,8 +1,6 @@
 package hardware
 
 import (
-	"context"
-	"sync"
 	"time"
 
 	"github.com/mchmarny/eventmaker/pkg/event"
@@ -19,27 +17,18 @@ func NewRAMMetricProvider() *RAMMetricProvider {
 // RAMMetricProvider is a host RAM metric provider
 type RAMMetricProvider struct{}
 
-// Describe provides provider info
-func (p *RAMMetricProvider) Describe() *event.MetricInfo {
-	return &event.MetricInfo{
-		Metric: "swap memory",
-		Type:   "float",
-		Unit:   "percent",
-	}
-}
-
 // Provide provides os ram memory metrics at duration interval
-func (p *RAMMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, src string, d time.Duration, h func(e *event.SimpleEvent)) error {
-	defer wg.Done()
-	ticker := time.NewTicker(d)
+func (p *RAMMetricProvider) Provide(r *event.InvokerRequest, h func(e *event.Reading)) error {
+	defer r.WaitGroup.Done()
+	ticker := time.NewTicker(r.Frequency)
 
 	for {
 		select {
-		case <-ctx.Done():
+		case <-r.Context.Done():
 			ticker.Stop()
 			return nil
 		case <-ticker.C:
-			e, err := getRAMMetric(src)
+			e, err := getRAMMetric(r.Source)
 			if err != nil {
 				return err
 			}
@@ -48,7 +37,7 @@ func (p *RAMMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, src
 	}
 }
 
-func getRAMMetric(src string) (e *event.SimpleEvent, err error) {
+func getRAMMetric(src string) (e *event.Reading, err error) {
 	if src == "" {
 		return nil, errors.New("nil source ID")
 	}
@@ -56,13 +45,13 @@ func getRAMMetric(src string) (e *event.SimpleEvent, err error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating swap memory metric")
 	}
-	e = &event.SimpleEvent{
+	e = &event.Reading{
 		ID:    uuid.NewV4().String(),
 		SrcID: src,
 		Time:  time.Now().UTC().Unix(),
 		Label: "swap memory",
 		Unit:  "percent",
-		Value: mp.UsedPercent,
+		Data:  mp.UsedPercent,
 	}
 	return
 }

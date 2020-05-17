@@ -8,13 +8,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func runEventTest(t *testing.T, e *event.SimpleEvent) {
+func runEventTest(t *testing.T, e *event.Reading) {
 	assert.NotNil(t, e)
 	assert.Equal(t, "test", e.SrcID)
 	assert.NotEmpty(t, e.ID)
 	assert.NotEmpty(t, e.Label)
 	assert.NotEmpty(t, e.Unit)
-	assert.NotNil(t, e.Value)
+	assert.NotNil(t, e.Data)
 	assert.NotZero(t, e.Time)
 }
 

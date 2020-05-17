@@ -1,8 +1,6 @@
 package hardware
 
 import (
-	"context"
-	"sync"
 	"time"
 
 	"github.com/mchmarny/eventmaker/pkg/event"
@@ -19,27 +17,18 @@ func NewLoadMetricProvider() *LoadMetricProvider {
 // LoadMetricProvider is a host system load metric provider
 type LoadMetricProvider struct{}
 
-// Describe provides provider info
-func (p *LoadMetricProvider) Describe() *event.MetricInfo {
-	return &event.MetricInfo{
-		Metric: "system load",
-		Type:   "float",
-		Unit:   "percent",
-	}
-}
-
 // Provide provides os ram memory metrics at duration interval
-func (p *LoadMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, src string, d time.Duration, h func(e *event.SimpleEvent)) error {
-	defer wg.Done()
-	ticker := time.NewTicker(d)
+func (p *LoadMetricProvider) Provide(r *event.InvokerRequest, h func(e *event.Reading)) error {
+	defer r.WaitGroup.Done()
+	ticker := time.NewTicker(r.Frequency)
 
 	for {
 		select {
-		case <-ctx.Done():
+		case <-r.Context.Done():
 			ticker.Stop()
 			return nil
 		case <-ticker.C:
-			e, err := getLoadMetric(src)
+			e, err := getLoadMetric(r.Source)
 			if err != nil {
 				return err
 			}
@@ -48,7 +37,7 @@ func (p *LoadMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, sr
 	}
 }
 
-func getLoadMetric(src string) (e *event.SimpleEvent, err error) {
+func getLoadMetric(src string) (e *event.Reading, err error) {
 	if src == "" {
 		return nil, errors.New("nil source ID")
 	}
@@ -56,13 +45,13 @@ func getLoadMetric(src string) (e *event.SimpleEvent, err error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating avg system load metric")
 	}
-	e = &event.SimpleEvent{
+	e = &event.Reading{
 		ID:    uuid.NewV4().String(),
 		SrcID: src,
 		Time:  time.Now().UTC().Unix(),
 		Label: "system load",
 		Unit:  "percent",
-		Value: mp.Load1,
+		Data:  mp.Load1,
 	}
 	return
 }

@@ -1,8 +1,6 @@
 package hardware
 
 import (
-	"context"
-	"sync"
 	"time"
 
 	"github.com/mchmarny/eventmaker/pkg/event"
@@ -19,27 +17,18 @@ func NewCPUMetricProvider() *CPUMetricProvider {
 // CPUMetricProvider is a host CPU metric provider
 type CPUMetricProvider struct{}
 
-// Describe provides provider info
-func (p *CPUMetricProvider) Describe() *event.MetricInfo {
-	return &event.MetricInfo{
-		Metric: "cpu utilization",
-		Type:   "float",
-		Unit:   "percent",
-	}
-}
-
 // Provide provides os process events
-func (p *CPUMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, src string, d time.Duration, h func(e *event.SimpleEvent)) error {
-	defer wg.Done()
-	ticker := time.NewTicker(d)
+func (p *CPUMetricProvider) Provide(r *event.InvokerRequest, h func(e *event.Reading)) error {
+	defer r.WaitGroup.Done()
+	ticker := time.NewTicker(r.Frequency)
 
 	for {
 		select {
-		case <-ctx.Done():
+		case <-r.Context.Done():
 			ticker.Stop()
 			return nil
 		case <-ticker.C:
-			e, err := getCPUMetric(src, d)
+			e, err := getCPUMetric(r.Source, r.Frequency)
 			if err != nil {
 				return err
 			}
@@ -48,7 +37,7 @@ func (p *CPUMetricProvider) Provide(ctx context.Context, wg *sync.WaitGroup, src
 	}
 }
 
-func getCPUMetric(src string, d time.Duration) (e *event.SimpleEvent, err error) {
+func getCPUMetric(src string, d time.Duration) (e *event.Reading, err error) {
 	if src == "" {
 		return nil, errors.New("nil source ID")
 	}
@@ -56,13 +45,13 @@ func getCPUMetric(src string, d time.Duration) (e *event.SimpleEvent, err error)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating cpu utilization metric")
 	}
-	e = &event.SimpleEvent{
+	e = &event.Reading{
 		ID:    uuid.NewV4().String(),
 		SrcID: src,
 		Time:  time.Now().UTC().Unix(),
 		Label: "cpu utilization",
 		Unit:  "percent",
-		Value: mp[0],
+		Data:  mp[0],
 	}
 	return
 }

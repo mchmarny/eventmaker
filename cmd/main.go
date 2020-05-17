@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mchmarny/eventmaker/pkg/provider"
+	"github.com/mchmarny/eventmaker/pkg/event"
 	"github.com/mchmarny/eventmaker/pkg/provider/hardware"
 	"github.com/mchmarny/gcputil/env"
 )
@@ -33,7 +33,7 @@ func main() {
 	}
 
 	// providers
-	ps := []provider.Provider{
+	ps := []event.Provider{
 		hardware.NewCPUMetricProvider(),
 		hardware.NewLoadMetricProvider(),
 		hardware.NewRAMMetricProvider(),
@@ -55,15 +55,16 @@ func main() {
 
 	// send
 	for _, p := range ps {
-		logger.Printf("metric %v", p.Describe())
 		wg.Add(1)
 		j := &job{
-			clientID:  clientID,
-			ctx:       ctx,
-			wg:        wg,
-			client:    c,
-			provider:  p,
-			frequency: freq,
+			client:   c,
+			provider: p,
+			request: &event.InvokerRequest{
+				Source:    clientID,
+				Context:   ctx,
+				WaitGroup: wg,
+				Frequency: freq,
+			},
 		}
 		go send(j)
 	}

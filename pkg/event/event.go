@@ -1,18 +1,31 @@
 package event
 
-// SimpleEvent represents generic event
-type SimpleEvent struct {
+import (
+	"context"
+	"sync"
+	"time"
+)
+
+// Reading represents generic event
+type Reading struct {
 	ID    string      `json:"id"`
 	SrcID string      `json:"src_id"`
 	Time  int64       `json:"time"`
 	Label string      `json:"label"`
-	Value interface{} `json:"value"`
+	Data  interface{} `json:"data"`
 	Unit  string      `json:"unit"`
 }
 
-// MetricInfo describes the type of event the provider can provide
-type MetricInfo struct {
-	Metric string `json:"metric"`
-	Unit   string `json:"unit"`
-	Type   string `json:"type"`
+// InvokerRequest is the context of the provider invoker
+type InvokerRequest struct {
+	Source    string
+	Context   context.Context
+	WaitGroup *sync.WaitGroup
+	Frequency time.Duration
+}
+
+// Provider defines the interface for data provider
+type Provider interface {
+	// Provide generates events and invokes handler
+	Provide(r *InvokerRequest, h func(e *Reading)) error
 }

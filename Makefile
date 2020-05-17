@@ -22,8 +22,7 @@ run: mod
 
 .PHONY: build
 build: mod
-	GOOS=darwin GOARCH=amd64 \
-    go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
+	go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
     -mod vendor -o ./bin/$(SERVICE_NAME) ./cmd
 
 .PHONY: exec
