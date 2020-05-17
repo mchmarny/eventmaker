@@ -44,11 +44,24 @@ export CONN_STR=$(az iot hub device-identity show-connection-string \
 
 ## run 
 
+Build the executable 
+
 ```shell
-make run
+make build
 ``` 
 
-Your events will be published to Azure Service Bus. To find the connection string
+And start sending 
+
+```shell
+bin/eventmaker
+```
+
+Few defaults you can change using environment variables:
+
+* `CLIENT_ID` - device ID associated with this client (default: `client-1`)
+* `SEND_FREQ` - frequency of how often the events are sent (default: `1s`)
+
+To find the Azure Service Bus here these events will be published:
 
 ```shell
 az iot hub show \
