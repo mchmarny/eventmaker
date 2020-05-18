@@ -6,6 +6,4 @@ DIR="$(dirname "$0")"
 . "${DIR}/config"
 
 
-az iot hub create --name $HUB_NAME --sku S1
-
-
+az iot hub create --name $HUB_NAME --sku S1 --only-show-errors

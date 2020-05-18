@@ -14,7 +14,7 @@ do
         --device-id "${DEVICE_NAME_PREFIX}-${i}"
 
     CONN_STR=$(az iot hub device-identity show-connection-string \
-        --device-id $DEV_NAME \
+        --device-id "${DEVICE_NAME_PREFIX}-${i}" \
         --hub-name $HUB_NAME \
         -o tsv)
 
