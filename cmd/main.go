@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"os"
 	"os/signal"
@@ -21,17 +22,39 @@ var (
 	deviceID      = env.MustGetEnvVar("DEV_NAME", "device-1")
 	clientConnStr = env.MustGetEnvVar("CONN_STR", "")
 
-	args = os.Args[1:]
+	file   string
+	metric string
 )
 
 func main() {
 	logger.Printf("version: %s", Version)
-	logger.Printf("args: %v", args)
+
+	flag.StringVar(&file, "file", "", "metric template file path")
+	flag.StringVar(&metric, "metric", "", "individual template (e.g. temp|celsius|float|68.9:72.1|3s)")
+	flag.Parse()
+
+	logger.Printf("file: %v", file)
+	logger.Printf("metric: %v", metric)
+
+	if file == "" && metric == "" {
+		log.Fatalln("either --file or --metric arguments required")
+	}
 
 	// providers
-	ps, err := provider.ParseProviders(args)
-	if err != nil {
-		log.Fatalf("error parsing providers: %v", err)
+	ps := []event.Provider{}
+	if metric != "" {
+		pr, err := provider.ParseProvider(metric)
+		if err != nil {
+			log.Fatalf("error parsing provider from metric (%s): %v", metric, err)
+		}
+		ps = append(ps, pr)
+	}
+	if file != "" {
+		prs, err := provider.LoadProviders(file)
+		if err != nil {
+			log.Fatalf("error parsing provider from file (%s): %v", file, err)
+		}
+		ps = append(ps, prs...)
 	}
 	logger.Printf("loaded %d metric proviers", len(ps))
 

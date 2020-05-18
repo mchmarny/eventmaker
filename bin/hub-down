@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -o errexit
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+
+az iot hub delete --name $HUB_NAME --only-show-errors
+

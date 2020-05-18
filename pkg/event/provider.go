@@ -6,20 +6,25 @@ import (
 	"time"
 )
 
+// ParamConfig is the content of user config
+type ParamConfig struct {
+	Metrics []ReadingParam `yaml:"metrics"`
+}
+
 // ReadingParam is readings parameter
 type ReadingParam struct {
-	Raw       string
-	Label     string
-	Unit      string
-	Frequency time.Duration
-	Template  *GenArg
+	Raw       string        `yaml:"-" json:"-"`
+	Label     string        `yaml:"label" json:"label"`
+	Unit      string        `yaml:"unit" json:"unit"`
+	Frequency time.Duration `yaml:"frequency" json:"frequency"`
+	Template  GenArg        `yaml:"template" json:"template"`
 }
 
 // GenArg defines the generation arguments
 type GenArg struct {
-	Type string
-	Min  interface{}
-	Max  interface{}
+	Type string      `yaml:"type" json:"type"`
+	Min  interface{} `yaml:"min" json:"min"`
+	Max  interface{} `yaml:"max" json:"max"`
 }
 
 // InvokerRequest is the context of the provider invoker

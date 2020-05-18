@@ -1,5 +1,6 @@
 #!/bin/bash
 
+HUB_NAME="cloudylabs"
 NUMBER_OF_INSTANCES=5
 METRIC_TEMPLATE="temp|celsius|float|0:72.1|3s"
 

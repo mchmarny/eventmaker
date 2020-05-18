@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -o errexit
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+
+az iot hub create --name $HUB_NAME --sku S1
+
+

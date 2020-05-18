@@ -67,11 +67,7 @@ func makeMetric(src string, rp *event.ReadingParam) (e *event.Reading, err error
 	return
 }
 
-func getRandomValue(arg *event.GenArg) (val interface{}, err error) {
-	if arg == nil {
-		return nil, errors.New("nil generation template")
-	}
-
+func getRandomValue(arg event.GenArg) (val interface{}, err error) {
 	switch arg.Type {
 	case "int", "int8", "int32", "int64":
 		return getRandomIntValue(arg.Min.(int64), arg.Max.(int64)), nil

@@ -1,0 +1,23 @@
+--- 
+metrics: 
+- label: temp
+  frequency: "3s"
+  unit: celsius
+  template: 
+    max: 107.5
+    min: 86.1
+    type: float
+- label: speed
+  frequency: "1s"
+  unit: kmh
+  template: 
+    max: 200
+    min: 0
+    type: int
+- label: friction
+  frequency: "1s"
+  unit: coefficient
+  template: 
+    max: 1.00
+    min: 0.00
+    type: float

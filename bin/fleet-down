@@ -9,5 +9,6 @@ DIR="$(dirname "$0")"
 for name in $(az container list --query "[?contains(name, '${DEVICE_NAME_PREFIX}')].name" --output tsv)
 do
     az container delete --yes --name $name --only-show-errors
+    # az iot hub device-identity delete --hub-name $HUB_NAME --device-id $name --only-show-errors
 done
 

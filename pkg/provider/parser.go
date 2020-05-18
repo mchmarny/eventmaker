@@ -23,43 +23,9 @@ var (
 	logger = log.New(os.Stdout, "", 0)
 )
 
-// ParseProviders parses reading arguments
+// ParseProvider parses provider from commandline string
 // Expected format '--metric|temp|celsius|float|0:72.1|3s'
-func ParseProviders(args []string) (list []event.Provider, err error) {
-	if args == nil {
-		return nil, errors.New("nil metric arguments")
-	}
-	if len(args) == 0 {
-		return nil, errors.New("at least one metric argument required")
-	}
-
-	list = make([]event.Provider, 0)
-
-	nextIsMetric := false
-	for _, a := range args {
-		//logger.Printf("raw: %s", a)
-
-		if strings.TrimSpace(a) == metricPrefix {
-			//logger.Printf("skipping: %s", a)
-			nextIsMetric = true
-			continue
-		}
-
-		if nextIsMetric {
-			//logger.Printf("parsing: %s", a)
-			nextIsMetric = false
-			p, e := parseProvider(a)
-			if e != nil {
-				return nil, errors.Wrapf(e, "error parsing arg: %s", a)
-			}
-			list = append(list, p)
-		}
-	}
-
-	return list, nil
-}
-
-func parseProvider(arg string) (event.Provider, error) {
+func ParseProvider(arg string) (event.Provider, error) {
 	if arg == "" {
 		return nil, errors.New("empty metric arguments")
 	}
@@ -98,19 +64,19 @@ func parseProvider(arg string) (event.Provider, error) {
 		if e != nil {
 			return nil, errors.Wrapf(e, "error parsing int arg: %s", argVal)
 		}
-		rp.Template = t
+		rp.Template = *t
 	case "float", "float32", "float64":
 		t, e := getFloatArg(argVal)
 		if e != nil {
 			return nil, errors.Wrapf(e, "error parsing float arg: %s", argVal)
 		}
-		rp.Template = t
+		rp.Template = *t
 	case "bool":
 		t, e := getBoolArg(argVal)
 		if e != nil {
 			return nil, errors.Wrapf(e, "error parsing float arg: %s", argVal)
 		}
-		rp.Template = t
+		rp.Template = *t
 	default:
 		return nil, errors.New("invalid data type in template")
 	}
