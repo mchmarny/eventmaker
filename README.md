@@ -1,6 +1,8 @@
 # eventmaker
 
-Creates and configures Azure IoT Hub with virtual devices and sends mocked events to them.
+Creates and configures Azure IoT Hub with virtual devices and sends mocked events to them. Works both locally, from developer workstation as well as in a fleet from Azure Container Instances (ACI)
+
+![](img/overview.png)
 
 ## setup
 
