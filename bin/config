@@ -1,8 +1,8 @@
 #!/bin/bash
 
 HUB_NAME="eventmaker20200523"
-NUMBER_OF_INSTANCES=5
-METRIC_TEMPLATE="temp|celsius|float|0:72.1|3s"
+NUMBER_OF_DEVICES=5
+METRIC_CONFIG="https://raw.githubusercontent.com/mchmarny/eventmaker/master/config/thermostat.yaml"
 
 # don't change these unless you know what you are doing 
 DEVICE_NAME_PREFIX="eventmaker-deivce"
