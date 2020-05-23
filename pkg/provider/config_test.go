@@ -31,7 +31,7 @@ func TestLoadingConfigFromFile(t *testing.T) {
 }
 
 func TestLoadingConfigFromURL(t *testing.T) {
-	u := "https://raw.githubusercontent.com/mchmarny/eventmaker/master/config/example.yaml"
+	u := "https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/example.yaml"
 	rps, err := loadParamsFromConfig(u)
 	assert.Nil(t, err)
 	assert.NotNil(t, rps)
