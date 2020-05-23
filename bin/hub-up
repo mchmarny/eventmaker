@@ -5,5 +5,51 @@ set -o errexit
 DIR="$(dirname "$0")"
 . "${DIR}/config"
 
-
+# hub
+echo "Configuring IoT Hub..."
 az iot hub create --name $HUB_NAME --sku S1 --only-show-errors
+
+# hub metadata
+SUB_ID=$(az iot hub show -n $HUB_NAME --query subscriptionid -o tsv)
+RES_GRP=$(az iot hub show -n $HUB_NAME --query resourcegroup -o tsv)
+
+# service bus as routing destination
+echo "Configuring Service Bus..."
+az servicebus namespace create --name $HUB_NAME --sku Standard
+az servicebus topic create --name "${HUB_NAME}-messages" \
+                           --namespace-name $HUB_NAME
+
+# service bus topic authorization
+az servicebus topic authorization-rule create \
+  --name "${HUB_NAME}-auth" \
+  --namespace-name $HUB_NAME \
+  --topic-name "${HUB_NAME}-messages" \
+  --rights Listen Manage Send
+
+
+# capture the resulting service bus topic connection string
+CONN_STR=$(az servicebus topic authorization-rule keys list \
+  --name "${HUB_NAME}-auth" \
+  --namespace-name $HUB_NAME \
+  --topic-name "${HUB_NAME}-messages" \
+  --query primaryConnectionString -o tsv)
+
+
+# routing endpoint for the service bus topic
+echo "Configuring IoT Hub message routing..."
+az iot hub routing-endpoint create \
+  --connection-string $CONN_STR \
+  --endpoint-name "${HUB_NAME}-endpoint" \
+  --endpoint-resource-group $RES_GRP \
+  --endpoint-subscription-id $SUB_ID \
+  --endpoint-type ServiceBusTopic \
+  --hub-name $HUB_NAME
+
+# message route for the service bus topic endpoint
+az iot hub route create --name "${HUB_NAME}-messages" \
+  --hub-name $HUB_NAME \
+  --source-type devicemessages \
+  --endpoint-name "${HUB_NAME}-endpoint" \
+  --enabled
+
+echo "IoT Hub configuration done"

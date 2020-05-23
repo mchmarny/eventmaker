@@ -5,6 +5,10 @@ set -o errexit
 DIR="$(dirname "$0")"
 . "${DIR}/config"
 
+az servicebus topic delete --name "${HUB_NAME}-messages" \
+                           --namespace-name $HUB_NAME
+
+az servicebus namespace delete --name $HUB_NAME --only-show-errors
 
 az iot hub delete --name $HUB_NAME --only-show-errors
 

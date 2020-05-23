@@ -15,7 +15,7 @@ metrics:
     min: 0
     type: int
 - label: friction
-  frequency: "1s"
+  frequency: "5s"
   unit: coefficient
   template: 
     max: 1.00
