@@ -21,7 +21,7 @@ func validateConfig(t *testing.T, rp event.ReadingParam) {
 }
 
 func TestLoadingConfigFromFile(t *testing.T) {
-	rps, err := loadParamsFromConfig("../../config/example.yaml")
+	rps, err := loadParamsFromConfig("../../conf/example.yaml")
 	assert.Nil(t, err)
 	assert.NotNil(t, rps)
 	assert.GreaterOrEqual(t, len(rps), 1)

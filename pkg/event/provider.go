@@ -27,8 +27,8 @@ type GenArg struct {
 	Max  interface{} `yaml:"max" json:"max"`
 }
 
-// InvokerRequest is the context of the provider invoker
-type InvokerRequest struct {
+// ProviderRequest is the context of the provider invoker
+type ProviderRequest struct {
 	Source    string
 	Context   context.Context
 	WaitGroup *sync.WaitGroup
@@ -38,6 +38,6 @@ type InvokerRequest struct {
 // Provider defines the interface for data provider
 type Provider interface {
 	// Provide generates events and invokes handler
-	Provide(r *InvokerRequest, h func(e *Reading)) error
+	Provide(r *ProviderRequest, h func(e *Reading)) error
 	GetParam() *ReadingParam
 }

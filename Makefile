@@ -18,11 +18,7 @@ test: mod
 
 .PHONY: run
 run: mod
-	go run cmd/*.go --metric "temp|celsius|float|0:72.1|3s"
-
-.PHONY: run-file
-run-file: mod
-	go run cmd/*.go --file "config/example.yaml"
+	go run cmd/*.go --file "conf/example.yaml"
 
 .PHONY: build
 build: mod
@@ -31,11 +27,7 @@ build: mod
 
 .PHONY: exec
 exec:
-	dist/eventmaker --metric "temp|celsius|float|0:72.1|3s"
-
-.PHONY: exec-file
-exec-file:
-	dist/eventmaker --file "config/example.yaml"
+	dist/eventmaker --file "conf/example.yaml"
 
 .PHONY: image
 image: mod
@@ -46,7 +38,7 @@ image: mod
 .PHONY: exec-image
 exec-image:
 	docker run -e CONN_STR=$(CONN_STR) -e DEV_NAME='test-run-1' \
-						 -ti mchmarny/eventmaker:v0.1.1 /eventmaker --metric 'temp|celsius|float|0:72.1|3s'
+						 -ti mchmarny/eventmaker:v0.1.1 /eventmaker --file conf/example.yaml
 
 .PHONY: lint
 lint:

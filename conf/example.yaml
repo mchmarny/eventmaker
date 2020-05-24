@@ -4,20 +4,21 @@ metrics:
   frequency: "3s"
   unit: celsius
   template: 
-    max: 107.5
-    min: 86.1
     type: float
+    min: 86.1
+    max: 107.5
 - label: speed
-  frequency: "1s"
+  frequency: "5s"
   unit: kmh
   template: 
-    max: 200
-    min: 0
     type: int
+    min: 0
+    max: 200
 - label: friction
-  frequency: "5s"
+  frequency: "1s"
   unit: coefficient
   template: 
-    max: 1.00
-    min: 0.00
     type: float
+    min: 0.00
+    max: 1.00
+

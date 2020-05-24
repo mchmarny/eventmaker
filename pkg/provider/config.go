@@ -17,9 +17,9 @@ func LoadProviders(file string) ([]event.Provider, error) {
 		return nil, errors.Wrapf(err, "error parsing file: %s", file)
 	}
 
-	ps := []event.Provider{}
+	ps := make([]event.Provider, 0)
 	for _, rp := range rps {
-		ps = append(ps, NewMetricProvider(&rp))
+		ps = append(ps, NewMetricProvider(rp))
 	}
 
 	return ps, nil
