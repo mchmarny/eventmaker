@@ -1,6 +1,6 @@
 # eventmaker
 
-Small utility to mock IoT events using dynamically configurable format and load. `eventmaker` can also configures Azure IoT Hub with devices and launches a fleet of virtual event generators on Azure Container Instances to send data at configurable frequency. 
+Small utility to mock IoT events with dynamically configurable format, metric range, and load. `eventmaker` can also configures Azure IoT Hub with devices and launches a fleet of virtual event generators on Azure Container Instances to send data at configurable frequency. 
 
 ![](img/overview.png)
 
