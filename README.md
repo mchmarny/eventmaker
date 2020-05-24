@@ -82,6 +82,20 @@ metrics:
     type: int
 ```
 
+## development 
+
+To run the `eventmaker` you will need an instance of IoT Hub and a device. To create these resources and setup your development environment (e.g. `CONN_STR`), run:
+
+```shell
+source bin/dev-up
+```
+
+When you done, cleanup previously created development resources 
+
+```shell
+source bin/dev-down
+```
+
 ## cleanup 
 
 To delete previously deployed fleet

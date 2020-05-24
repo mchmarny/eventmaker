@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -o errexit
+
+TODAY=$(date '+%Y%m%d')
+DEV_NAME="eventmakerdev"
+export HUB_NAME="${DEV_NAME}${TODAY}"
+export DEV_NAME="${DEV_NAME}-0"
+
+echo "Creating"
+echo "  device:  ${DEV_NAME}"
+echo "  hub:     ${HUB_NAME}"
+
+az iot hub create --name $HUB_NAME \
+                  --sku S1 \
+                  --only-show-errors
+
+az iot hub device-identity create \
+    --hub-name $HUB_NAME \
+    --device-id $DEV_NAME
+
+export CONN_STR=$(az iot hub device-identity show-connection-string \
+    --device-id $DEV_NAME --hub-name $HUB_NAME -o tsv)
+
+echo "  connstr: ${CONN_STR}"

@@ -22,7 +22,7 @@ var (
 	// Version will be overritten during build
 	Version = "v0.0.1-default"
 
-	deviceID = env.MustGetEnvVar("DEV_NAME", "device-1")
+	deviceID = env.MustGetEnvVar("DEV_NAME", "eventmakerdev-0")
 
 	file    string
 	pubType string
@@ -57,14 +57,14 @@ func main() {
 
 	switch pubType {
 	case event.StdoutPublisher:
-		stdoutPublisher, err := stdout.NewEventSender(ctx)
+		stdoutPublisher, err := stdout.NewEventSender(ctx, logger)
 		if err != nil {
 			log.Fatalf("error creating stdout publisher: %v", err)
 		}
 		defer stdoutPublisher.Close()
 		publisher = stdoutPublisher
 	case event.AzureIoTHubPublsher:
-		iotHubPublisher, err := iothub.NewEventSender(ctx)
+		iotHubPublisher, err := iothub.NewEventSender(ctx, logger)
 		if err != nil {
 			log.Fatalf("error creating iot hub publisher: %v", err)
 		}
@@ -96,7 +96,7 @@ func main() {
 // run executes provider with invoker request
 func run(ctx context.Context, p event.Provider, r event.ProviderRequest, s event.Publisher) {
 	err := p.Provide(&r, func(e *event.Reading) {
-		if err := s.Send(ctx, r.Source, e); err != nil {
+		if err := s.Send(ctx, e); err != nil {
 			if !errors.Is(err, context.Canceled) {
 				logger.Printf("error sending: '%+v'", e)
 			}

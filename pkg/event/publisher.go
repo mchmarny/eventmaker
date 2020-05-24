@@ -11,6 +11,6 @@ const (
 
 // Publisher defines the interface for event sender
 type Publisher interface {
-	Send(ctx context.Context, src string, e *Reading) error
+	Send(ctx context.Context, e *Reading) error
 	Close() error
 }

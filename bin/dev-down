@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -o errexit
+
+echo "Deleting hub and all of its devices"
+echo "  hub:     ${HUB_NAME}"
+
+az iot hub delete --name $HUB_NAME \
+                  --only-show-errors
+
+unset CONN_STR

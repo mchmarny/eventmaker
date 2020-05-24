@@ -4,13 +4,13 @@ metrics:
   frequency: "1s"
   unit: celsius
   template: 
-    min: 86.1
-    max: 107.5
     type: float
+    min: 39.1
+    max: 73.5
 - label: humidity
-  frequency: "1s"
+  frequency: "2s"
   unit: percent
   template: 
+    type: int
     min: 0
     max: 100
-    type: int

@@ -20,14 +20,14 @@ test: mod
 run: mod
 	go run cmd/*.go --file "conf/example.yaml"
 
+.PHONY: send
+send: mod
+	go run cmd/*.go --file "conf/thermostat.yaml" --publisher iothub
+
 .PHONY: build
 build: mod
 	CGO_ENABLED=0 go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
     -mod vendor -o ./dist/$(SERVICE_NAME) ./cmd
-
-.PHONY: exec
-exec:
-	dist/eventmaker --file "conf/example.yaml"
 
 .PHONY: image
 image: mod
