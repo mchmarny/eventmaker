@@ -11,6 +11,7 @@ import (
 
 	"github.com/mchmarny/eventmaker/pkg/event"
 	"github.com/mchmarny/eventmaker/pkg/provider"
+	"github.com/mchmarny/eventmaker/pkg/publisher/http"
 	"github.com/mchmarny/eventmaker/pkg/publisher/iothub"
 	"github.com/mchmarny/eventmaker/pkg/publisher/stdout"
 	"github.com/mchmarny/gcputil/env"
@@ -32,7 +33,7 @@ func main() {
 	logger.Printf("version: %s", Version)
 
 	flag.StringVar(&file, "file", "", "metric template file path")
-	flag.StringVar(&pubType, "publisher", "stdout", "event publisher (stdout, iothub)")
+	flag.StringVar(&pubType, "publisher", "stdout", "event publisher (stdout, iothub, http)")
 	flag.Parse()
 
 	if file == "" {
@@ -71,6 +72,13 @@ func main() {
 		}
 		defer iotHubPublisher.Close()
 		publisher = iotHubPublisher
+	case event.HTTPPublsher:
+		httpPublisher, err := http.NewEventSender(ctx, logger)
+		if err != nil {
+			log.Fatalf("error creating http publisher: %v", err)
+		}
+		defer httpPublisher.Close()
+		publisher = httpPublisher
 	default:
 		log.Fatalf("invalid publisher type (%s)", pubType)
 	}

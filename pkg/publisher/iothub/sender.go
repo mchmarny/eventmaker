@@ -16,6 +16,9 @@ import (
 // NewEventSender creates nee MetricProvider
 func NewEventSender(ctx context.Context, l *log.Logger) (*EventSender, error) {
 	connStr := os.Getenv("CONN_STR")
+	if connStr == "" {
+		return nil, errors.New("CONN_STR not defined")
+	}
 	c, err := iotdevice.NewFromConnectionString(mqtt.New(), connStr)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error creating client from: '%s'", connStr)
