@@ -11,8 +11,8 @@ const (
 	HTTPPublsher = "http"
 )
 
-// Publisher defines the interface for event sender
+// Publisher defines the interface for event publisher
 type Publisher interface {
-	Send(ctx context.Context, e *Reading) error
+	Publish(ctx context.Context, e *MetricReading) error
 	Close() error
 }

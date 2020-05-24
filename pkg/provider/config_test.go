@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func validateConfig(t *testing.T, rp event.ReadingParam) {
+func validateConfig(t *testing.T, rp event.MetricTemplate) {
 	assert.NotNil(t, rp)
 	assert.NotEmpty(t, rp.Label)
 	assert.NotEmpty(t, rp.Unit)

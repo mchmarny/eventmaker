@@ -24,8 +24,8 @@ func (s *EventSender) Close() error {
 	return nil
 }
 
-// Send sends provied events to stdout
-func (s *EventSender) Send(ctx context.Context, e *event.Reading) error {
+// Publish sends provied events to stdout
+func (s *EventSender) Publish(ctx context.Context, e *event.MetricReading) error {
 	s.logger.Printf("%+v", e)
 	return nil
 }

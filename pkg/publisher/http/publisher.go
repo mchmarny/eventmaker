@@ -35,8 +35,8 @@ func (s *EventSender) Close() error {
 	return nil
 }
 
-// Send sends provied events to stdout
-func (s *EventSender) Send(ctx context.Context, e *event.Reading) error {
+// Publish sends provied events to stdout
+func (s *EventSender) Publish(ctx context.Context, e *event.MetricReading) error {
 	data, _ := json.Marshal(e)
 
 	req, err := http.NewRequest(http.MethodPost, s.url, bytes.NewBuffer(data))
@@ -54,7 +54,8 @@ func (s *EventSender) Send(ctx context.Context, e *event.Reading) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return errors.Wrapf(err, "invalid response code to %s: %d", s.url, resp.Status)
+		return errors.Wrapf(err, "invalid response code to %s: %d (%s)",
+			s.url, resp.StatusCode, resp.Status)
 	}
 
 	return nil

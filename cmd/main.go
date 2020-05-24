@@ -104,8 +104,8 @@ func main() {
 
 // run executes provider with invoker request
 func run(ctx context.Context, p event.Provider, r event.ProviderRequest, s event.Publisher) {
-	err := p.Provide(&r, func(e *event.Reading) {
-		if err := s.Send(ctx, e); err != nil {
+	err := p.Provide(&r, func(e *event.MetricReading) {
+		if err := s.Publish(ctx, e); err != nil {
 			if !errors.Is(err, context.Canceled) {
 				logger.Printf("error sending: '%+v'", e)
 			}

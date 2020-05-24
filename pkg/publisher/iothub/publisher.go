@@ -50,8 +50,8 @@ func (s *EventSender) Close() error {
 	return nil
 }
 
-// Send sends provied events to IoT Hub
-func (s *EventSender) Send(ctx context.Context, e *event.Reading) error {
+// Publish sends provied events to IoT Hub
+func (s *EventSender) Publish(ctx context.Context, e *event.MetricReading) error {
 	data, _ := json.Marshal(e)
 	opts := []iotdevice.SendOption{
 		iotdevice.WithSendMessageID(e.ID),

@@ -8,7 +8,7 @@ import (
 )
 
 func TestRandomIntGen(t *testing.T) {
-	arg := event.GenArg{Type: "int", Min: int64(0), Max: int64(100)}
+	arg := event.ValueTemplate{Type: "int", Min: int64(0), Max: int64(100)}
 
 	val, err := getRandomValue(&arg)
 	assert.Nil(t, err)
@@ -20,7 +20,7 @@ func TestRandomIntGen(t *testing.T) {
 }
 
 func TestRandomFloatGen(t *testing.T) {
-	arg := event.GenArg{Type: "float", Min: float64(0), Max: float64(100)}
+	arg := event.ValueTemplate{Type: "float", Min: float64(0), Max: float64(100)}
 
 	val, err := getRandomValue(&arg)
 	assert.Nil(t, err)
@@ -32,7 +32,7 @@ func TestRandomFloatGen(t *testing.T) {
 }
 
 func TestRandomBoolGen(t *testing.T) {
-	arg := event.GenArg{Type: "bool", Min: 0, Max: 1}
+	arg := event.ValueTemplate{Type: "bool", Min: 0, Max: 1}
 
 	val, err := getRandomValue(&arg)
 	assert.Nil(t, err)

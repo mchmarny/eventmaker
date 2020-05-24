@@ -25,7 +25,7 @@ func LoadProviders(file string) ([]event.Provider, error) {
 	return ps, nil
 }
 
-func loadParamsFromConfig(file string) ([]event.ReadingParam, error) {
+func loadParamsFromConfig(file string) ([]event.MetricTemplate, error) {
 	if file == "" {
 		return nil, errors.New("file argument required")
 	}
@@ -47,7 +47,7 @@ func loadParamsFromConfig(file string) ([]event.ReadingParam, error) {
 		content = f
 	}
 
-	var c event.ParamConfig
+	var c event.ConfigTemplate
 	err := yaml.Unmarshal(content, &c)
 	if err != nil {
 		return nil, errors.Wrap(err, "error parsing content")

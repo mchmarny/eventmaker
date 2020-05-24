@@ -12,7 +12,7 @@ import (
 )
 
 // NewMetricProvider creates nee MetricProvider
-func NewMetricProvider(param event.ReadingParam) *MetricProvider {
+func NewMetricProvider(param event.MetricTemplate) *MetricProvider {
 	return &MetricProvider{
 		param: &param,
 	}
@@ -20,16 +20,16 @@ func NewMetricProvider(param event.ReadingParam) *MetricProvider {
 
 // MetricProvider generates metric readers based on dynamic value
 type MetricProvider struct {
-	param *event.ReadingParam
+	param *event.MetricTemplate
 }
 
 // GetParam returns local param
-func (p *MetricProvider) GetParam() *event.ReadingParam {
+func (p *MetricProvider) GetParam() *event.MetricTemplate {
 	return p.param
 }
 
 // Provide provides os process events
-func (p *MetricProvider) Provide(r *event.ProviderRequest, h func(e *event.Reading)) error {
+func (p *MetricProvider) Provide(r *event.ProviderRequest, h func(e *event.MetricReading)) error {
 	defer r.WaitGroup.Done()
 	ticker := time.NewTicker(r.Frequency)
 
@@ -48,7 +48,7 @@ func (p *MetricProvider) Provide(r *event.ProviderRequest, h func(e *event.Readi
 	}
 }
 
-func makeMetric(src string, rp *event.ReadingParam) (e *event.Reading, err error) {
+func makeMetric(src string, rp *event.MetricTemplate) (e *event.MetricReading, err error) {
 	if rp == nil {
 		return nil, errors.New("nil reading param")
 	}
@@ -58,7 +58,7 @@ func makeMetric(src string, rp *event.ReadingParam) (e *event.Reading, err error
 		return nil, errors.Wrap(ge, "error generating rundom value")
 	}
 
-	e = &event.Reading{
+	e = &event.MetricReading{
 		ID:    uuid.NewV4().String(),
 		SrcID: src,
 		Time:  time.Now().UTC().Unix(),
@@ -69,7 +69,7 @@ func makeMetric(src string, rp *event.ReadingParam) (e *event.Reading, err error
 	return
 }
 
-func getRandomValue(arg *event.GenArg) (val interface{}, err error) {
+func getRandomValue(arg *event.ValueTemplate) (val interface{}, err error) {
 	switch arg.Type {
 	case "int", "int8", "int32", "int64":
 		return getRandomIntValue(arg)
@@ -82,7 +82,7 @@ func getRandomValue(arg *event.GenArg) (val interface{}, err error) {
 	}
 }
 
-func getRandomIntValue(arg *event.GenArg) (int64, error) {
+func getRandomIntValue(arg *event.ValueTemplate) (int64, error) {
 	rand.Seed(time.Now().UnixNano())
 	min, err := toInt64(arg.Min)
 	if err != nil {
@@ -100,7 +100,7 @@ func toInt64(v interface{}) (int64, error) {
 	return strconv.ParseInt(s, 10, 64)
 }
 
-func getRandomFloatValue(arg *event.GenArg) (float64, error) {
+func getRandomFloatValue(arg *event.ValueTemplate) (float64, error) {
 	rand.Seed(time.Now().UnixNano())
 	min, err := toFloat64(arg.Min)
 	if err != nil {
