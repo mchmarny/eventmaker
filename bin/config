@@ -6,4 +6,4 @@ METRIC_CONFIG="https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf
 
 # don't change these unless you know what you are doing 
 DEVICE_NAME_PREFIX="eventmaker-deivce"
-IMAGE_VERSION="v0.2.1"
+IMAGE_VERSION="v0.3.1"
