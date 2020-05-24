@@ -84,17 +84,21 @@ metrics:
 
 ## data 
 
-Once the fleet is up you can navigate to the IoT Hub portion of the Azure portal and see all the devices that have been configured on the hub 
+To review all the devices that were configured, go to IoT Hub in Azure portal
 
 ![](img/az-iothub-devices.png)
 
-Additionally, you can navigate the Service Bus section of the Azure portal and monitor all the messages that are being received by these devices
+To monitor the messages that are being received by these devices, go to Service Bus
 
 ![](img/az-bus-messages.png)
 
-Finally, to see all the `eventmaker` instances that generate that data you can navigate to the Container Instances part of the Azure portal and see each one one of the containers that has been launched to correspond to the device created in the IoT Hub
+To see all the `eventmaker` instances that generate that data, go to Container Instances 
 
 ![](img/az-aci-instances.png)
+
+Additionally, you can analyze the data in Azure Time Series Insights
+
+![](img/az-timeseries-insights.png)
 
 
 ## cleanup 
