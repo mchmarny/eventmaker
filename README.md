@@ -82,19 +82,20 @@ metrics:
     type: int
 ```
 
-## development 
+## data 
 
-To run the `eventmaker` you will need an instance of IoT Hub and a device. To create these resources and setup your development environment (e.g. `CONN_STR`), run:
+Once the fleet is up you can navigate to the IoT Hub portion of the Azure portal and see all the devices that have been configured on the hub 
 
-```shell
-source bin/dev-up
-```
+![](img/az-iothub-devices.png)
 
-When you done, cleanup previously created development resources 
+Additionally, you can navigate the Service Bus section of the Azure portal and monitor all the messages that are being received by these devices
 
-```shell
-source bin/dev-down
-```
+![](img/az-bus-messages.png)
+
+Finally, to see all the `eventmaker` instances that generate that data you can navigate to the Container Instances part of the Azure portal and see each one one of the containers that has been launched to correspond to the device created in the IoT Hub
+
+![](img/az-aci-instances.png)
+
 
 ## cleanup 
 
@@ -112,6 +113,19 @@ To delete hub and all of it's devices
 bin/hub-down
 ```
 
+## development 
+
+To run the `eventmaker` you will need an instance of IoT Hub and a device. To create these resources and setup your development environment (e.g. `CONN_STR`), run:
+
+```shell
+source bin/dev-up
+```
+
+When you done, cleanup previously created development resources 
+
+```shell
+source bin/dev-down
+```
 
 ## Disclaimer
 

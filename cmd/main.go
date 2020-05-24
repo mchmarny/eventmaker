@@ -36,6 +36,7 @@ func main() {
 	flag.Parse()
 
 	if file == "" {
+		log.Printf("args: %v", os.Args)
 		log.Fatalln("--file flag required")
 	}
 

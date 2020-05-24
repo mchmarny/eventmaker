@@ -1,6 +1,6 @@
 GIT_COMMIT      ?=$(shell git rev-list -1 HEAD)
 SERVICE_NAME    ?=eventmaker
-RELEASE_VERSION ?=v0.1.2
+RELEASE_VERSION ?=v0.2.1
 RELEASE_COMMIT  ?=$(RELEASE_VERSION)-$(GIT_COMMIT)
 DOCKER_USERNAME ?=$(DOCKER_USER)
 
@@ -18,11 +18,11 @@ test: mod
 
 .PHONY: run
 run: mod
-	go run cmd/*.go --file "conf/example.yaml"
+	go run cmd/*.go --file conf/example.yaml
 
 .PHONY: send
 send: mod
-	go run cmd/*.go --file "conf/thermostat.yaml" --publisher iothub
+	go run cmd/*.go --file conf/thermostat.yaml --publisher iothub
 
 .PHONY: build
 build: mod
@@ -35,10 +35,11 @@ image: mod
 		-t "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)" .
 	docker push "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)"
 
-.PHONY: exec-image
-exec-image:
-	docker run -e CONN_STR=$(CONN_STR) -e DEV_NAME='test-run-1' \
-						 -ti mchmarny/eventmaker:v0.1.1 /eventmaker --file conf/example.yaml
+.PHONY: image-run
+image-run:
+	docker run -e DEV_NAME="docker-1" \
+		-ti "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)" \
+		--file https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/example.yaml
 
 .PHONY: lint
 lint:
