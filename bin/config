@@ -1,9 +1,9 @@
 #!/bin/bash
 
-HUB_NAME="eventmaker20200524"
+HUB_NAME="eventmaker20200525"
 NUMBER_OF_DEVICES=5
 METRIC_CONFIG="https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/thermostat.yaml"
 
 # don't change these unless you know what you are doing 
 DEVICE_NAME_PREFIX="eventmaker-deivce"
-IMAGE_VERSION="v0.3.1"
+IMAGE_VERSION="v0.4.0"
