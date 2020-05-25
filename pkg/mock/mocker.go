@@ -39,15 +39,15 @@ func New(src string, m []event.MetricTemplate, p event.Publisher) (*EventMocker,
 		return nil, errors.New("src required")
 	}
 
-	prov := make([]MetricProvider, 0)
-	for _, mt := range p {
-		prov = append(prov, MetricProvider{template: mt})
+	prs := make([]provide.MetricProvider, 0)
+	for _, mt := range m {
+		prs = append(prs, provide.NewMetricProvider(mt))
 	}
 
 	mo := &EventMocker{
 		source:    src,
-		providers: prov,
-		publsher:  pub,
+		providers: prs,
+		publsher:  p,
 	}
 
 	return mo, nil
