@@ -13,10 +13,10 @@ jobs:
     steps:
 
     - name: Setup
+      id: go
       uses: actions/setup-go@v2
       with:
         go-version: ^1.14
-      id: go
 
     - name: Checkout
       id: setup
@@ -31,16 +31,15 @@ jobs:
       run: go test -v -count=1 -race ./...
       
     - name: Build
-      id: build-step
       run: |
         env CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags "-X main.Version=${{ github.ref }}" -mod vendor -o ./dist/eventmaker-mac ./cmd
         env CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build -ldflags "-X main.Version=${{ github.ref }}" -mod vendor -o ./dist/eventmaker-linux ./cmd
         env CGO_ENABLED=0 GOOS=darwin  GOARCH=amd64 go build -ldflags "-X main.Version=${{ github.ref }}" -mod vendor -o ./dist/eventmaker-windows.exe ./cmd
     
     - name: Archive
-      run: |
-        apt-get install zip
-        zip binaries.zip ./dist/eventmaker-mac ./dist/eventmaker-linux ./dist/eventmaker-windows.exe
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip eventmaker.zip ./dist/eventmaker-mac ./dist/eventmaker-linux ./dist/eventmaker-windows.exe
 
     - name: Release
       id: release-step
@@ -60,6 +59,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.release-step.outputs.upload_url }}
-        asset_path: ./binaries.zip
-        asset_name: binaries.zip
+        asset_path: ./eventmaker.zip
+        asset_name: eventmaker.zip
         asset_content_type: application/zip
