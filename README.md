@@ -19,7 +19,7 @@ To run `eventmaker` and publish events to the console run
 dist/eventmaker stdout --file conf/thermostat.yaml
 ```
 
-The file parameter can be local or a URL (e.g. [thermostat.yaml](https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/thermostat.yaml)). For more information about all the flags and commands supported by the `eventmaker` use the `--help` or `-h` flag 
+The file parameter can be local file path or a remote URL (e.g. [thermostat.yaml](https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/thermostat.yaml)). For more information about all the flags and commands supported by the `eventmaker` use the `--help` or `-h` flag 
 
 ```shell 
 dist/eventmaker -h
@@ -42,15 +42,17 @@ The mocked event look like this
 }
 ```
 
-* `id` - globally unique ID generated for each event 
-* `src_id` - device ID or name (configured using the `--device` flag at launch)
+* `id` - is a globally unique ID generated for each event 
+* `src_id` - is the device ID or name (configured using the `--device` flag at launch)
 * `time` - is the epoch (aka Unix time) of when the event was generated 
 
 The `label`, `data`, and `unit` elements are based on the metrics defined in the template (see [metrics](#metrics) section below)
 
 ## metrics 
 
-`eventmaker` supports dynamic metric configuration. That means that you can create new type of events by defining their label and frequency along with the type and range of value they should generate. For example, metric configuration for a virtual thermostat with temperature and humidity metrics would look like
+`eventmaker` dynamically configures metrics based on template where you can 
+
+To create events, define one or more metrics in a template file where you configure the frequency in which that metric should be generated along with its type and range of value. For example, configuration for a virtual thermostat with temperature and humidity metrics would look like this
 
 ```yaml
 --- 
@@ -72,7 +74,6 @@ metrics:
 ```
 
  That file where you define these metrics cab be either local (e.g. `--file conf/example.yaml`) or loaded from a remote URL (e.g. `--file https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/thermostat.yaml`)
-
 
 ## Disclaimer
 
