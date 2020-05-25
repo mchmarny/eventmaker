@@ -21,11 +21,11 @@ az iot hub device-identity show-connection-string \
 
 `eventmaker` can also configures Azure IoT Hub with devices and launch a fleet of virtual event generators on Azure Container Instances to send data at configurable frequency. 
 
-![](img/overview.png)
+![](../img/overview.png)
 
 ## setup
 
-To run `eventmaker` start by editing a couple variable in the [bin/config](bin/config) file:
+To run `eventmaker` start by editing a couple variable in the [bin/config](../bin/config) file:
 
 ```shell
 HUB_NAME="eventmaker20200523"
@@ -53,7 +53,7 @@ When completed, the final message will read "IoT Hub configuration done"
 
 ## fleet 
 
-Now that the IoT Hub is up, you can deploy the fleet of devices with a corresponding Azure Container Instances service to mock events and send them. The number of devices that will be created is defined in the `NUMBER_OF_DEVICES` variable in [bin/config](bin/config)
+Now that the IoT Hub is up, you can deploy the fleet of devices with a corresponding Azure Container Instances service to mock events and send them. The number of devices that will be created is defined in the `NUMBER_OF_DEVICES` variable in [bin/config](../bin/config)
 
 ```shell
 bin/fleet-up
@@ -66,19 +66,19 @@ bin/fleet-up
 
 To review all the devices that were configured, go to IoT Hub in Azure portal
 
-![](img/az-iothub-devices.png)
+![](../img/az-iothub-devices.png)
 
 To monitor the messages that are being received by these devices, go to Service Bus
 
-![](img/az-bus-messages.png)
+![](../img/az-bus-messages.png)
 
 To see all the `eventmaker` instances that generate that data, go to Container Instances 
 
-![](img/az-aci-instances.png)
+![](../img/az-aci-instances.png)
 
 Additionally, you can analyze the data in Azure Time Series Insights
 
-![](img/az-timeseries-insights.png)
+![](../img/az-timeseries-insights.png)
 
 
 ## cleanup 
