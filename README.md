@@ -110,7 +110,7 @@ metrics := []event.MetricTemplate{
 }
 ```
 
-Create a publisher target
+Create a publisher target using one of the event senders (`stdout`, `iothub`, `http`)
 
 ```go
 target, err := stdout.NewEventSender(ctx)
