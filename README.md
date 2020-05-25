@@ -1,10 +1,15 @@
 # eventmaker
 
-Utility to mock events with dynamically configurable format, metric range, and frequency. The currently supported publishers are 
+Utility to mock events with configurable format, random metric range, and frequency. The supported event publishers are 
 
-* `stdout` - prints events to the console 
-* `http` - posts events to specified URL ([how-to](doc/Azure-IoT-Hub.md))
-* `iothub` - sends events to Azure IoT Hub ([how-to](doc/Azure-IoT-Hub.md))
+* [x] `stdout` - prints events to the console 
+* [x] `http` - posts events to specified URL ([how-to](doc/Azure-IoT-Hub.md))
+* [x] `iothub` - sends events to Azure IoT Hub ([how-to](doc/Azure-IoT-Hub.md))
+* [ ] `eventhub` - sends events to Azure Event Hub
+* [ ] `iotcore` - sends events to GCP IoT Core 
+* [ ] `pubsub` - sends events to GCP Pub/Sub 
+* [ ] `sns` - sends events to AWS SNS
+* [ ] `sqs` - sends events to AWS SQS
 
 ## usage 
 
