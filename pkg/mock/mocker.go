@@ -33,6 +33,26 @@ func Make(ctx context.Context, src, file string, pub event.Publisher) (*EventMoc
 	return m, nil
 }
 
+// New creates a new EventMocker
+func New(src string, m []event.MetricTemplate, p event.Publisher) (*EventMocker, error) {
+	if src == "" {
+		return nil, errors.New("src required")
+	}
+
+	prov := make([]MetricProvider, 0)
+	for _, mt := range p {
+		prov = append(prov, MetricProvider{template: mt})
+	}
+
+	mo := &EventMocker{
+		source:    src,
+		providers: prov,
+		publsher:  pub,
+	}
+
+	return mo, nil
+}
+
 // EventMocker represents instane of event mocker
 type EventMocker struct {
 	source    string
