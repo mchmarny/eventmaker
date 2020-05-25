@@ -19,6 +19,7 @@ jobs:
       id: go
 
     - name: Checkout
+      id: setup
       uses: actions/checkout@v2
 
     - name: Tidy
@@ -30,13 +31,19 @@ jobs:
       run: go test -v -count=1 -race ./...
       
     - name: Build
+      id: build-step
       run: |
-        env CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags "-X main.Version=${{ github.ref }}" -mod vendor -o ./dist/eventmaker ./cmd
+        env CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags "-X main.Version=${{ github.ref }}" -mod vendor -o ./dist/eventmaker-mac ./cmd
         env CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build -ldflags "-X main.Version=${{ github.ref }}" -mod vendor -o ./dist/eventmaker-linux ./cmd
         env CGO_ENABLED=0 GOOS=darwin  GOARCH=amd64 go build -ldflags "-X main.Version=${{ github.ref }}" -mod vendor -o ./dist/eventmaker-windows.exe ./cmd
     
+    - name: Archive
+      run: |
+        apt-get install zip
+        zip binaries.zip ./dist/eventmaker-mac ./dist/eventmaker-linux ./dist/eventmaker-windows.exe
+
     - name: Release
-      id: create_release
+      id: release-step
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -46,3 +53,13 @@ jobs:
         body: Automatic release 
         draft: false
         prerelease: false
+
+    - name: Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.release-step.outputs.upload_url }}
+        asset_path: ./binaries.zip
+        asset_name: binaries.zip
+        asset_content_type: application/zip
