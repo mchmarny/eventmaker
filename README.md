@@ -75,6 +75,63 @@ metrics:
 
  That file where you define these metrics cab be either local (e.g. `--file conf/example.yaml`) or loaded from a remote URL (e.g. `--file https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/thermostat.yaml`)
 
+## example 
+
+To use `eventmaker` as a library, start by importing the package 
+
+```shell
+go get -u github.com/mchmarny/eventmaker
+```
+
+Then create some metric templates 
+
+```go
+metrics := []event.MetricTemplate{
+  {
+    Label:     "temperature",
+    Unit:      "celsius",
+    Frequency: time.Duration(1 * time.Second),
+    Template: event.ValueTemplate{
+      Type: "float",
+      Min:  39.1,
+      Max:  73.5,
+    },
+  },
+  {
+    Label:     "humidity",
+    Unit:      "percent",
+    Frequency: time.Duration(1 * time.Minute),
+    Template: event.ValueTemplate{
+      Type: "int",
+      Min:  0,
+      Max:  100,
+    },
+  },
+}
+```
+
+Create a publisher target
+
+```go
+target, err := stdout.NewEventSender(ctx)
+if err != nil {
+  panic(err)
+}
+```
+
+And finally create an instance of `mocker` with the previously created `metrics` and `target` and start it
+
+```go
+mocker, err := mock.New("demo-device-1", metrics, target)
+if err != nil {
+  panic(err)
+}
+
+mocker.Start(ctx)
+```
+
+A complete working example is available [here](example/main.go)
+
 ## Disclaimer
 
 This is my personal project and it does not represent my employer. I take no responsibility for issues caused by this code. I do my best to ensure that everything works, but if something goes wrong, my apologies is all you will get.
