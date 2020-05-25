@@ -11,41 +11,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// EventMocker represents instane of event mocker
-type EventMocker struct {
-	source    string
-	providers []provide.MetricProvider
-	publsher  event.Publisher
-}
-
-// Start initiates mocking of events
-func (m *EventMocker) Start(ctx context.Context) (context.CancelFunc, <-chan error) {
-	ctx, cancel := context.WithCancel(ctx)
-	errs := make(chan error, 1)
-	for i := range m.providers {
-		m.run(ctx, i, errs)
-	} // for providers
-	return cancel, errs
-}
-
-func (m *EventMocker) run(ctx context.Context, i int, er chan error) {
-	go func() {
-		p := m.providers[i]
-		err := p.Provide(ctx, m.source, func(e *event.MetricReading) {
-			if err := m.publsher.Publish(ctx, e); err != nil {
-				if !errors.Is(err, context.Canceled) {
-					er <- errors.Wrapf(err, "error publishing event [%+v]", e)
-				}
-			}
-		})
-		if err != nil {
-			er <- errors.Wrapf(err, "error starting provider [%+v]", p.GetParam())
-		}
-	}()
-}
-
-// New is a factory methood for EventMocker
-func New(ctx context.Context, src, file, pub string) (*EventMocker, error) {
+// Make is a factory methood for EventMocker
+func Make(ctx context.Context, src, file, pub string) (*EventMocker, error) {
 	if file == "" {
 		return nil, errors.New("nil file")
 	}
@@ -90,4 +57,37 @@ func New(ctx context.Context, src, file, pub string) (*EventMocker, error) {
 	}
 
 	return m, nil
+}
+
+// EventMocker represents instane of event mocker
+type EventMocker struct {
+	source    string
+	providers []provide.MetricProvider
+	publsher  event.Publisher
+}
+
+// Start initiates mocking of events
+func (m *EventMocker) Start(ctx context.Context) (context.CancelFunc, <-chan error) {
+	ctx, cancel := context.WithCancel(ctx)
+	errs := make(chan error, 1)
+	for i := range m.providers {
+		m.run(ctx, i, errs)
+	} // for providers
+	return cancel, errs
+}
+
+func (m *EventMocker) run(ctx context.Context, i int, er chan error) {
+	go func() {
+		p := m.providers[i]
+		err := p.Provide(ctx, m.source, func(e *event.MetricReading) {
+			if err := m.publsher.Publish(ctx, e); err != nil {
+				if !errors.Is(err, context.Canceled) {
+					er <- errors.Wrapf(err, "error publishing event [%+v]", e)
+				}
+			}
+		})
+		if err != nil {
+			er <- errors.Wrapf(err, "error starting provider [%+v]", p.GetParam())
+		}
+	}()
 }

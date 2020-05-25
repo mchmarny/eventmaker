@@ -40,7 +40,7 @@ func main() {
 	signal.Notify(sigChan, os.Interrupt)
 
 	ctx := context.Background()
-	em, err := mock.New(ctx, deviceID, file, pubType)
+	em, err := mock.Make(ctx, deviceID, file, pubType)
 	if err != nil {
 		logger.Fatalf("error creating mocker: %v", err)
 	}
