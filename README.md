@@ -14,7 +14,7 @@ To run `eventmaker` and publish events to the console run
 dist/eventmaker stdout --file conf/thermostat.yaml
 ```
 
-The file parameter can be local or a URL (e.g. https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/thermostat.yaml). For more information about all the flags and commands supported by the `eventmaker` use the `--help` or `-h` flag 
+The file parameter can be local or a URL (e.g. [thermostat.yaml](https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/thermostat.yaml)). For more information about all the flags and commands supported by the `eventmaker` use the `--help` or `-h` flag 
 
 ```shell 
 dist/eventmaker -h
