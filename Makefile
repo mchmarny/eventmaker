@@ -7,7 +7,7 @@ RELEASE_VERSION  =v0.4.2
 RELEASE_COMMIT   =$(RELEASE_VERSION)-$(GIT_COMMIT)
 DOCKER_USERNAME ?=$(DOCKER_USER)
 
-.PHONY: mod test run send build exec image image-run lint clean
+.PHONY: mod test run send build exec image imagerun lint clean, tag
 all: test
 
 mod: ## Updates the go modules and vendors all dependancies 
@@ -32,7 +32,7 @@ image: mod ## Builds docker iamge
 		-t "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)" .
 	docker push "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)"
 
-image-run: ## Runs the pre-built docker image 
+imagerun: ## Runs the pre-built docker image 
 	docker run -e DEV_NAME="docker-1" \
 		-ti "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)" \
 		stdout --file https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/example.yaml
@@ -40,12 +40,17 @@ image-run: ## Runs the pre-built docker image
 lint: ## Lints the entire project 
 	golangci-lint run --timeout=3m
 
+tag: ## Creates release tag 
+	git tag $(RELEASE_VERSION)
+	git push origin $(RELEASE_VERSION)
+
 clean: ## Cleans dist directory
 	go clean
 	rm -fr ./dist/*
 
 help: ## Display available commands
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk \
+		'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 windows: $(WINDOWS) 
 
