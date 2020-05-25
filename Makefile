@@ -1,58 +1,70 @@
-GIT_COMMIT      ?=$(shell git rev-list -1 HEAD)
-SERVICE_NAME    ?=eventmaker
-RELEASE_VERSION ?=v0.4.0
-RELEASE_COMMIT  ?=$(RELEASE_VERSION)-$(GIT_COMMIT)
+GIT_COMMIT       =$(shell git rev-list -1 HEAD)
+SERVICE_NAME     =eventmaker
+WINDOWS          =$(SERVICE_NAME)-windows.exe
+LINUX            =$(SERVICE_NAME)-linux
+DARWIN           =$(SERVICE_NAME)
+RELEASE_VERSION  =v0.4.0
+RELEASE_COMMIT   =$(RELEASE_VERSION)-$(GIT_COMMIT)
 DOCKER_USERNAME ?=$(DOCKER_USER)
 
+.PHONY: mod test run send build exec image image-run lint clean
 all: test
 
-.PHONY: mod
-mod:
+mod: ## Updates the go modules and vendors all dependancies 
 	go mod tidy
 	go mod vendor
 
-.PHONY: test
-test: mod
+test: mod ## Tests the entire project 
 	go test -v -count=1 -race ./...
 	# go test -v -count=1 -run TestMakeCPUEvent ./...
 
-.PHONY: run
-run: mod
+run: mod ## Runs the uncompiled code with stdout publisher 
 	go run cmd/*.go stdout --file conf/example.yaml
 
-.PHONY: send
-send: mod
-	go run cmd/*.go iothub --file conf/thermostat.yaml
+build: mod windows linux darwin ## Build binaries for Mac, Linux, and Windows
+	@echo version: $(RELEASE_VERSION)
 
-.PHONY: build
-build: mod
-	CGO_ENABLED=0 go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
-    -mod vendor -o ./dist/$(SERVICE_NAME) ./cmd
-
-.PHONY: exec
-exec: build
+exec: darwin ## Builds binaries and executes it 
 	dist/eventmaker stdout --file conf/example.yaml
 
-.PHONY: image
-image: mod
+image: mod ## Builds docker iamge 
 	docker build --build-arg VERSION=$(RELEASE_COMMIT) \
 		-t "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)" .
 	docker push "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)"
 
-.PHONY: image-run
-image-run:
+image-run: ## Runs the pre-built docker image 
 	docker run -e DEV_NAME="docker-1" \
 		-ti "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)" \
 		stdout --file https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/example.yaml
 
-.PHONY: lint
-lint:
+lint: ## Lints the entire project 
 	golangci-lint run --timeout=3m
 
-.PHONY: clean
-clean:
+clean: ## Cleans dist directory
 	go clean
-	rm -fr ./bin/*
+	rm -fr ./dist/*
 
+help: ## Display available commands
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+windows: $(WINDOWS) 
+
+linux: $(LINUX) 
+
+darwin: $(DARWIN)
+
+$(WINDOWS):
+	env CGO_ENABLED=0 GOOS=windows GOARCH=amd64 \
+	  go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
+    -mod vendor -o ./dist/$(WINDOWS) ./cmd
+
+$(LINUX):
+	env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+	  go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
+    -mod vendor -o ./dist/$(LINUX) ./cmd
+
+$(DARWIN):
+	env CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
+	  go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
+    -mod vendor -o ./dist/$(DARWIN) ./cmd
 
