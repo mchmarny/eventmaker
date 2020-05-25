@@ -5,24 +5,22 @@ import (
 
 	"github.com/mchmarny/eventmaker/pkg/event"
 	"github.com/mchmarny/eventmaker/pkg/provide"
-	"github.com/mchmarny/eventmaker/pkg/publish/http"
-	"github.com/mchmarny/eventmaker/pkg/publish/iothub"
-	"github.com/mchmarny/eventmaker/pkg/publish/stdout"
 	"github.com/pkg/errors"
 )
 
 // Make is a factory methood for EventMocker
-func Make(ctx context.Context, src, file, pub string) (*EventMocker, error) {
+func Make(ctx context.Context, src, file string, pub event.Publisher) (*EventMocker, error) {
 	if file == "" {
-		return nil, errors.New("nil file")
+		return nil, errors.New("file required")
 	}
 
-	if pub == "" {
-		return nil, errors.New("nil pub")
+	if src == "" {
+		return nil, errors.New("src required")
 	}
 
 	m := &EventMocker{
-		source: src,
+		source:   src,
+		publsher: pub,
 	}
 
 	// providers
@@ -31,30 +29,6 @@ func Make(ctx context.Context, src, file, pub string) (*EventMocker, error) {
 		return nil, errors.Wrapf(err, "error parsing providers from file (%s)", file)
 	}
 	m.providers = providers
-
-	// publisher
-	switch pub {
-	case event.StdoutPublisher:
-		stdoutPublisher, err := stdout.NewEventSender(ctx)
-		if err != nil {
-			return nil, errors.Wrapf(err, "error creating stdout publisher")
-		}
-		m.publsher = stdoutPublisher
-	case event.AzureIoTHubPublsher:
-		iotHubPublisher, err := iothub.NewEventSender(ctx)
-		if err != nil {
-			return nil, errors.Wrapf(err, "error creating iot hub publisher")
-		}
-		m.publsher = iotHubPublisher
-	case event.HTTPPublsher:
-		httpPublisher, err := http.NewEventSender(ctx)
-		if err != nil {
-			return nil, errors.Wrapf(err, "error creating http publisher")
-		}
-		m.publsher = httpPublisher
-	default:
-		return nil, errors.Wrapf(err, "invalid publisher type (%s)", pub)
-	}
 
 	return m, nil
 }

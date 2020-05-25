@@ -5,14 +5,14 @@ github.com/amenzhinsky/iothub/iotdevice
 github.com/amenzhinsky/iothub/iotdevice/transport
 github.com/amenzhinsky/iothub/iotdevice/transport/mqtt
 github.com/amenzhinsky/iothub/logger
+# github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d
+github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/davecgh/go-spew v1.1.1
+## explicit
 github.com/davecgh/go-spew/spew
 # github.com/eclipse/paho.mqtt.golang v1.2.0
 github.com/eclipse/paho.mqtt.golang
 github.com/eclipse/paho.mqtt.golang/packets
-# github.com/mchmarny/gcputil v0.3.3
-## explicit
-github.com/mchmarny/gcputil/env
 # github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e
 ## explicit
 # github.com/pkg/errors v0.9.1
@@ -20,12 +20,19 @@ github.com/mchmarny/gcputil/env
 github.com/pkg/errors
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
+# github.com/russross/blackfriday/v2 v2.0.1
+github.com/russross/blackfriday/v2
 # github.com/satori/go.uuid v1.2.0
 ## explicit
 github.com/satori/go.uuid
+# github.com/shurcooL/sanitized_anchor_name v1.0.0
+github.com/shurcooL/sanitized_anchor_name
 # github.com/stretchr/testify v1.4.0
 ## explicit
 github.com/stretchr/testify/assert
+# github.com/urfave/cli/v2 v2.2.0
+## explicit
+github.com/urfave/cli/v2
 # golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy

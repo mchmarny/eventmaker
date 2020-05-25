@@ -18,16 +18,20 @@ test: mod
 
 .PHONY: run
 run: mod
-	go run cmd/*.go --file conf/example.yaml
+	go run cmd/*.go stdout --file conf/example.yaml
 
 .PHONY: send
 send: mod
-	go run cmd/*.go --file conf/thermostat.yaml --publisher iothub
+	go run cmd/*.go iothub --file conf/thermostat.yaml
 
 .PHONY: build
 build: mod
 	CGO_ENABLED=0 go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
     -mod vendor -o ./dist/$(SERVICE_NAME) ./cmd
+
+.PHONY: exec
+exec: build
+	dist/eventmaker stdout --file conf/example.yaml
 
 .PHONY: image
 image: mod
@@ -39,7 +43,7 @@ image: mod
 image-run:
 	docker run -e DEV_NAME="docker-1" \
 		-ti "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)" \
-		--file https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/example.yaml
+		stdout --file https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/example.yaml
 
 .PHONY: lint
 lint:

@@ -5,20 +5,18 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"os"
 
 	"github.com/mchmarny/eventmaker/pkg/event"
 	"github.com/pkg/errors"
 )
 
 // NewEventSender creates nee MetricProvider
-func NewEventSender(ctx context.Context) (*EventSender, error) {
-	t := os.Getenv("TARGET_URL")
-	if t == "" {
-		return nil, errors.New("TARGET_URL not defined")
+func NewEventSender(ctx context.Context, url string) (*EventSender, error) {
+	if url == "" {
+		return nil, errors.New("url not defined")
 	}
 	return &EventSender{
-		url: t,
+		url: url,
 	}, nil
 }
 

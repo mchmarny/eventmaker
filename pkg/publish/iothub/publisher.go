@@ -3,7 +3,6 @@ package iothub
 import (
 	"context"
 	"encoding/json"
-	"os"
 
 	"github.com/amenzhinsky/iothub/iotdevice"
 	"github.com/amenzhinsky/iothub/iotdevice/transport/mqtt"
@@ -13,10 +12,9 @@ import (
 )
 
 // NewEventSender creates nee MetricProvider
-func NewEventSender(ctx context.Context) (*EventSender, error) {
-	connStr := os.Getenv("CONN_STR")
+func NewEventSender(ctx context.Context, connStr string) (*EventSender, error) {
 	if connStr == "" {
-		return nil, errors.New("CONN_STR not defined")
+		return nil, errors.New("connStr not defined")
 	}
 	c, err := iotdevice.NewFromConnectionString(mqtt.New(), connStr)
 	if err != nil {
@@ -59,7 +57,7 @@ func (s *EventSender) Publish(ctx context.Context, e *event.MetricReading) error
 
 	if err := s.client.SendEvent(ctx, data, opts...); err != nil {
 		if !errors.Is(err, context.Canceled) {
-			errors.Wrapf(err, "error on publish: '%+v' with %v", e, opts)
+			return errors.Wrapf(err, "error on publish: '%+v' with %v", e, opts)
 		}
 	}
 

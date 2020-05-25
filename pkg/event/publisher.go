@@ -2,14 +2,14 @@ package event
 
 import "context"
 
-const (
-	// StdoutPublisher is the default publsher to stdout
-	StdoutPublisher = "stdout"
-	// AzureIoTHubPublsher is the IoT Hub publisher
-	AzureIoTHubPublsher = "iothub"
-	// HTTPPublsher is a basic HTTP publisher
-	HTTPPublsher = "http"
-)
+// ListPublishers list supported publishers
+func ListPublishers() []string {
+	return []string{
+		"stdout",
+		"iothub",
+		"http",
+	}
+}
 
 // Publisher defines the interface for event publisher
 type Publisher interface {

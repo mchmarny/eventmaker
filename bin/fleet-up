@@ -25,8 +25,8 @@ do
         --cpu 1 \
         --memory 1 \
         --os-type Linux \
-        --environment-variables CONN_STR=${CONN_STR} DEV_NAME="${DEVICE_NAME_PREFIX}-${i}" \
-        --command-line "/eventmaker --file ${METRIC_CONFIG} --publisher iothub" \
+        --environment-variables CONN_STR=${CONN_STR} DEVICE_NAME="${DEVICE_NAME_PREFIX}-${i}" \
+        --command-line "/eventmaker iothub --file ${METRIC_CONFIG}" \
         --no-wait
 done
 
