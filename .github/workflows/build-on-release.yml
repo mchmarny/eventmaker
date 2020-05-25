@@ -1,26 +1,27 @@
 name: Go
 
 on:
-  release:
-    types: [created, edited]
+  push:
+    tags:
+      - 'v*' # v0.4.4
 
 jobs:
 
   build:
-    name: Build
+    name: Create Release
     runs-on: ubuntu-latest
     steps:
 
-    - name: Set up Go
+    - name: Setup
       uses: actions/setup-go@v2
       with:
         go-version: ^1.14
       id: go
 
-    - name: Check out code
+    - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Get dependencies
+    - name: Tidy
       run: |
         go mod tidy 
         go mod vendor
@@ -33,4 +34,15 @@ jobs:
         env CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags "-X main.Version=${{ github.ref }}" -mod vendor -o ./dist/eventmaker ./cmd
         env CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build -ldflags "-X main.Version=${{ github.ref }}" -mod vendor -o ./dist/eventmaker-linux ./cmd
         env CGO_ENABLED=0 GOOS=darwin  GOARCH=amd64 go build -ldflags "-X main.Version=${{ github.ref }}" -mod vendor -o ./dist/eventmaker-windows.exe ./cmd
-
+    
+    - name: Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: Automatic release 
+        draft: false
+        prerelease: false
