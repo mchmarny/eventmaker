@@ -3,7 +3,6 @@ package iothub
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"os"
 
 	"github.com/amenzhinsky/iothub/iotdevice"
@@ -14,7 +13,7 @@ import (
 )
 
 // NewEventSender creates nee MetricProvider
-func NewEventSender(ctx context.Context, l *log.Logger) (*EventSender, error) {
+func NewEventSender(ctx context.Context) (*EventSender, error) {
 	connStr := os.Getenv("CONN_STR")
 	if connStr == "" {
 		return nil, errors.New("CONN_STR not defined")
@@ -28,18 +27,15 @@ func NewEventSender(ctx context.Context, l *log.Logger) (*EventSender, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "error connecting")
 	}
-	l.Println("IoT Hub Client connected")
 
 	return &EventSender{
 		client: c,
-		logger: l,
 	}, nil
 }
 
 // EventSender sends events
 type EventSender struct {
 	client *iotdevice.Client
-	logger *log.Logger
 }
 
 // Close closes the client connection

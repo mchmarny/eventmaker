@@ -1,4 +1,4 @@
-package provider
+package provide
 
 import (
 	"io/ioutil"
@@ -11,18 +11,18 @@ import (
 )
 
 // LoadProviders loads user config
-func LoadProviders(file string) ([]event.Provider, error) {
-	rps, err := loadParamsFromConfig(file)
+func LoadProviders(file string) ([]MetricProvider, error) {
+	templates, err := loadParamsFromConfig(file)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing file: %s", file)
+		return nil, errors.Wrapf(err, "error parsing metric template file: %s", file)
 	}
 
-	ps := make([]event.Provider, 0)
-	for _, rp := range rps {
-		ps = append(ps, NewMetricProvider(rp))
+	providers := make([]MetricProvider, 0)
+	for _, t := range templates {
+		providers = append(providers, NewMetricProvider(t))
 	}
 
-	return ps, nil
+	return providers, nil
 }
 
 func loadParamsFromConfig(file string) ([]event.MetricTemplate, error) {

@@ -2,22 +2,18 @@ package stdout
 
 import (
 	"context"
-	"log"
+	"fmt"
 
 	"github.com/mchmarny/eventmaker/pkg/event"
 )
 
 // NewEventSender creates nee MetricProvider
-func NewEventSender(ctx context.Context, l *log.Logger) (*EventSender, error) {
-	return &EventSender{
-		logger: l,
-	}, nil
+func NewEventSender(ctx context.Context) (*EventSender, error) {
+	return &EventSender{}, nil
 }
 
 // EventSender sends events
-type EventSender struct {
-	logger *log.Logger
-}
+type EventSender struct{}
 
 // Close closes the client connection
 func (s *EventSender) Close() error {
@@ -26,6 +22,6 @@ func (s *EventSender) Close() error {
 
 // Publish sends provied events to stdout
 func (s *EventSender) Publish(ctx context.Context, e *event.MetricReading) error {
-	s.logger.Printf("%+v", e)
+	fmt.Printf("%+v\n", e)
 	return nil
 }

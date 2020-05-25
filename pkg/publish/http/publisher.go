@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"os"
 
@@ -13,21 +12,19 @@ import (
 )
 
 // NewEventSender creates nee MetricProvider
-func NewEventSender(ctx context.Context, l *log.Logger) (*EventSender, error) {
+func NewEventSender(ctx context.Context) (*EventSender, error) {
 	t := os.Getenv("TARGET_URL")
 	if t == "" {
 		return nil, errors.New("TARGET_URL not defined")
 	}
 	return &EventSender{
-		logger: l,
-		url:    t,
+		url: t,
 	}, nil
 }
 
 // EventSender sends events
 type EventSender struct {
-	logger *log.Logger
-	url    string
+	url string
 }
 
 // Close closes the client connection

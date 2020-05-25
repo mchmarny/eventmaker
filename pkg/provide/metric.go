@@ -1,6 +1,7 @@
-package provider
+package provide
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -12,34 +13,32 @@ import (
 )
 
 // NewMetricProvider creates nee MetricProvider
-func NewMetricProvider(param event.MetricTemplate) *MetricProvider {
-	return &MetricProvider{
-		param: &param,
+func NewMetricProvider(template event.MetricTemplate) MetricProvider {
+	return MetricProvider{
+		template: template,
 	}
 }
 
 // MetricProvider generates metric readers based on dynamic value
 type MetricProvider struct {
-	param *event.MetricTemplate
+	template event.MetricTemplate
 }
 
-// GetParam returns local param
-func (p *MetricProvider) GetParam() *event.MetricTemplate {
-	return p.param
+// GetParam returns local template
+func (p *MetricProvider) GetParam() event.MetricTemplate {
+	return p.template
 }
 
 // Provide provides os process events
-func (p *MetricProvider) Provide(r *event.ProviderRequest, h func(e *event.MetricReading)) error {
-	defer r.WaitGroup.Done()
-	ticker := time.NewTicker(r.Frequency)
-
+func (p *MetricProvider) Provide(ctx context.Context, src string, h func(e *event.MetricReading)) error {
+	ticker := time.NewTicker(p.template.Frequency)
 	for {
 		select {
-		case <-r.Context.Done():
+		case <-ctx.Done():
 			ticker.Stop()
 			return nil
 		case <-ticker.C:
-			e, err := makeMetric(r.Source, p.param)
+			e, err := makeMetric(src, p.template)
 			if err != nil {
 				return err
 			}
@@ -48,11 +47,7 @@ func (p *MetricProvider) Provide(r *event.ProviderRequest, h func(e *event.Metri
 	}
 }
 
-func makeMetric(src string, rp *event.MetricTemplate) (e *event.MetricReading, err error) {
-	if rp == nil {
-		return nil, errors.New("nil reading param")
-	}
-
+func makeMetric(src string, rp event.MetricTemplate) (e *event.MetricReading, err error) {
 	v, ge := getRandomValue(&rp.Template)
 	if ge != nil {
 		return nil, errors.Wrap(ge, "error generating rundom value")
@@ -78,7 +73,7 @@ func getRandomValue(arg *event.ValueTemplate) (val interface{}, err error) {
 	case "bool":
 		return getRandomBoolValue(), nil
 	default:
-		return nil, errors.New("invalid data type in template")
+		return nil, fmt.Errorf("invalid data type in template: %s", arg.Type)
 	}
 }
 
