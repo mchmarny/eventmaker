@@ -4,7 +4,7 @@ Utility to mock events with configurable format, random metric range, and freque
 
 * [x] `stdout` - prints events to the console 
 * [x] `http` - posts events to specified URL ([how-to](doc/Azure-IoT-Hub.md))
-* [x] `iothub` - sends events to Azure IoT Hub ([how-to](doc/Azure-IoT-Hub.md))
+* [x] `iothub` - sends events to Azure IoT Hub ([how-to](doc/HTTP.md))
 * [ ] `eventhub` - sends events to Azure Event Hub
 * [ ] `iotcore` - sends events to GCP IoT Core 
 * [ ] `pubsub` - sends events to GCP Pub/Sub 
@@ -16,13 +16,13 @@ Utility to mock events with configurable format, random metric range, and freque
 To run `eventmaker` and publish events to the console run
 
 ```shell
-dist/eventmaker stdout --file conf/thermostat.yaml
+./eventmaker stdout --file conf/thermostat.yaml
 ```
 
 The file parameter can be local file path or a remote URL (e.g. [thermostat.yaml](https://raw.githubusercontent.com/mchmarny/eventmaker/master/conf/thermostat.yaml)). For more information about all the flags and commands supported by the `eventmaker` use the `--help` or `-h` flag 
 
 ```shell 
-dist/eventmaker -h
+./eventmaker -h
 ```
 
 For instructions how to publish events to other targets see the how-to links above

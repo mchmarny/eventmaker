@@ -1,12 +1,11 @@
-## IoT Hub 
-
+## Azure IoT Hub Publisher
 
 ## usage 
 
 ```shell
-dist/eventmaker iothub --device <your device name>
-                       --file conf/example.yaml \
-                       --connect <your IoT Hub connection string>
+./eventmaker iothub --device <your device name>
+                    --file conf/example.yaml \
+                    --connect <your IoT Hub connection string>
 ```
 
 You can locate the IoT Hub connection string using the Azure CLI 
