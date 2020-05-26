@@ -45,7 +45,7 @@ func main() {
 	// commands
 	stdoutCmd := &cli.Command{
 		Name:  "stdout",
-		Usage: "mock events and print them in console",
+		Usage: "Mocks events and prints them in console",
 		Flags: []cli.Flag{deviceFlag, fileFlag},
 		Action: func(c *cli.Context) error {
 			pub, err := stdout.NewEventSender(ctx)
@@ -58,7 +58,7 @@ func main() {
 
 	httpCmd := &cli.Command{
 		Name:  "http",
-		Usage: "mock events and POSTs them to URL",
+		Usage: "Mocks events and POSTs them to URL",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "url",
@@ -84,7 +84,7 @@ func main() {
 
 	iothubCmd := &cli.Command{
 		Name:  "iothub",
-		Usage: "mock events and sends them to Azure IoT Hub",
+		Usage: "Mocks events and sends them to Azure IoT Hub",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "connect",

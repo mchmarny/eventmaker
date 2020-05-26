@@ -2,7 +2,7 @@ SERVICE_NAME     =eventmaker
 RELEASE_VERSION  =v0.4.11
 DOCKER_USERNAME ?=$(DOCKER_USER)
 
-.PHONY: mod test run send build exec image imagerun lint clean, tag
+.PHONY: mod test run build exec image show imagerun lint clean, tag
 all: test
 
 mod: ## Updates the go modules and vendors all dependancies 
@@ -20,8 +20,11 @@ build: mod ## Build local release binary
 		env CGO_ENABLED=0 go build -ldflags "-X main.Version=$(RELEASE_VERSION)" \
     	-mod vendor -o ./dist/$(SERVICE_NAME) ./cmd
 
-exec: build ## Builds binaries and executes it 
+exec: build ## Builds binaries and executes stdout 
 	dist/eventmaker stdout --file conf/example.yaml
+
+show: build ## Builds binaries and executes help 
+	dist/eventmaker -h
 
 image: mod ## Builds docker iamge 
 	docker build --build-arg VERSION=$(RELEASE_VERSION) \
