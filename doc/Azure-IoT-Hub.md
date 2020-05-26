@@ -25,7 +25,7 @@ az iot hub device-identity show-connection-string \
 
 ## setup
 
-To run `eventmaker` start by editing a couple variable in the [bin/config](../bin/config) file:
+To run `eventmaker` start by editing a couple variable in the [bin/azure/config](../bin/azure/config) file:
 
 ```shell
 HUB_NAME="eventmaker20200523"
@@ -53,10 +53,10 @@ When completed, the final message will read "IoT Hub configuration done"
 
 ## fleet 
 
-Now that the IoT Hub is up, you can deploy the fleet of devices with a corresponding Azure Container Instances service to mock events and send them. The number of devices that will be created is defined in the `NUMBER_OF_DEVICES` variable in [bin/config](../bin/config)
+Now that the IoT Hub is up, you can deploy the fleet of devices with a corresponding Azure Container Instances service to mock events and send them. The number of devices that will be created is defined in the `NUMBER_OF_DEVICES` variable in [bin/azure/config](../bin/azure/config)
 
 ```shell
-bin/fleet-up
+bin/azure/fleet-up
 ```
 
 > The deployment is asynchronous so if you want to see the result open the ACI dashboard in Azure Portal. Note, may take a ~30 seconds for the first image to appear in the UI
@@ -86,7 +86,7 @@ Additionally, you can analyze the data in Azure Time Series Insights
 To delete previously deployed fleet
 
 ```shell
-bin/fleet-down
+bin/azure/fleet-down
 ```
 
 To delete hub and all of it's devices
@@ -94,7 +94,7 @@ To delete hub and all of it's devices
 > Note, this will delete the IoT Hub itself and all of its devices 
 
 ```shell
-bin/hub-down
+bin/azure/hub-down
 ```
 
 ## development 
@@ -102,13 +102,13 @@ bin/hub-down
 If you want to make changes and run the `eventmaker` locally, you will need an instance of IoT Hub and a device. To create these resources and setup your development environment run:
 
 ```shell
-source bin/dev-up
+source bin/azure/dev-up
 ```
 
 When you done, cleanup previously created development resources 
 
 ```shell
-source bin/dev-down
+source bin/azure/dev-down
 ```
 
 ## Disclaimer
