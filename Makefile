@@ -1,10 +1,5 @@
-GIT_COMMIT       =$(shell git rev-list -1 HEAD)
 SERVICE_NAME     =eventmaker
-WINDOWS          =$(SERVICE_NAME)-windows.exe
-LINUX            =$(SERVICE_NAME)-linux
-DARWIN           =$(SERVICE_NAME)
 RELEASE_VERSION  =v0.4.11
-RELEASE_COMMIT   =$(RELEASE_VERSION)-$(GIT_COMMIT)
 DOCKER_USERNAME ?=$(DOCKER_USER)
 
 .PHONY: mod test run send build exec image imagerun lint clean, tag
@@ -22,14 +17,14 @@ run: mod ## Runs the uncompiled code with stdout publisher
 	go run cmd/*.go stdout --file conf/example.yaml
 
 build: mod ## Build local release binary
-		env CGO_ENABLED=0 go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
+		env CGO_ENABLED=0 go build -ldflags "-X main.Version=$(RELEASE_VERSION)" \
     	-mod vendor -o ./dist/$(SERVICE_NAME) ./cmd
 
 exec: build ## Builds binaries and executes it 
 	dist/eventmaker stdout --file conf/example.yaml
 
 image: mod ## Builds docker iamge 
-	docker build --build-arg VERSION=$(RELEASE_COMMIT) \
+	docker build --build-arg VERSION=$(RELEASE_VERSION) \
 		-t "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)" .
 	docker push "$(DOCKER_USERNAME)/$(SERVICE_NAME):$(RELEASE_VERSION)"
 
