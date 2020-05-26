@@ -12,5 +12,5 @@ jobs:
       - checkout
 
       - run: go mod tidy
-	    - run: go mod vendor
+      - run: go mod vendor
       - run: go test -v -count=1 -race ./...
