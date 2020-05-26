@@ -11,7 +11,8 @@ Utility to mock events with configurable format, random metric range, and freque
 * [ ] `sns` - sends events to AWS SNS
 * [ ] `sqs` - sends events to AWS SQS
 
-[![CircleCI](https://circleci.com/gh/mchmarny/eventmaker.svg?style=shield)](https://circleci.com/gh/mchmarny/eventmaker)
+
+[![Build](https://github.com/mchmarny/eventmaker/workflows/Test%20Push/badge.svg)](https://github.com/mchmarny/eventmaker/actions?query=workflow%3ATest%20Push) 
 
 ## usage 
 
