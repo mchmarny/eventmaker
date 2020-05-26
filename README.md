@@ -12,7 +12,7 @@ Utility to mock events with configurable format, random metric range, and freque
 * [ ] `sqs` - sends events to AWS SQS
 
 
-[![Test](https://github.com/mchmarny/eventmaker/workflows/Test/badge.svg)](https://github.com/mchmarny/eventmaker/actions?query=workflow%3ATest) [![Release](https://github.com/mchmarny/eventmaker/workflows/Release/badge.svg)](https://github.com/mchmarny/eventmaker/actions?query=workflow%3ARelease) 
+[![Test](https://github.com/mchmarny/eventmaker/workflows/Test/badge.svg)](https://github.com/mchmarny/eventmaker/actions?query=workflow%3ATest) [![Release](https://github.com/mchmarny/eventmaker/workflows/Release/badge.svg)](https://github.com/mchmarny/eventmaker/actions?query=workflow%3ARelease) [![Go Report Card](https://goreportcard.com/badge/github.com/mchmarny/eventmaker)](https://goreportcard.com/report/github.com/mchmarny/eventmaker)
 
 ## usage 
 
