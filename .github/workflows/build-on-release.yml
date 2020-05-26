@@ -39,7 +39,7 @@ jobs:
     - name: Archive
       uses: montudor/action-zip@v0.1.0
       with:
-        args: zip eventmaker.zip ./dist/eventmaker-mac ./dist/eventmaker-linux ./dist/eventmaker-windows.exe
+        args: zip -qq eventmaker.zip ./dist/eventmaker-mac ./dist/eventmaker-linux ./dist/eventmaker-windows.exe
 
     - name: Release
       id: release-step
