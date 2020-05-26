@@ -21,10 +21,11 @@ test: mod ## Tests the entire project
 run: mod ## Runs the uncompiled code with stdout publisher 
 	go run cmd/*.go stdout --file conf/example.yaml
 
-build: mod windows linux darwin ## Build binaries for Mac, Linux, and Windows
-	@echo version: $(RELEASE_VERSION)
+build: mod ## Build local release binary
+		env CGO_ENABLED=0 go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
+    	-mod vendor -o ./dist/$(SERVICE_NAME) ./cmd
 
-exec: darwin ## Builds binaries and executes it 
+exec: build ## Builds binaries and executes it 
 	dist/eventmaker stdout --file conf/example.yaml
 
 image: mod ## Builds docker iamge 
@@ -51,25 +52,3 @@ clean: ## Cleans dist directory
 help: ## Display available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk \
 		'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-
-windows: $(WINDOWS) 
-
-linux: $(LINUX) 
-
-darwin: $(DARWIN)
-
-$(WINDOWS):
-	env CGO_ENABLED=0 GOOS=windows GOARCH=amd64 \
-	  go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
-    -mod vendor -o ./dist/$(WINDOWS) ./cmd
-
-$(LINUX):
-	env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-	  go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
-    -mod vendor -o ./dist/$(LINUX) ./cmd
-
-$(DARWIN):
-	env CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
-	  go build -ldflags "-X main.Version=$(RELEASE_COMMIT)" \
-    -mod vendor -o ./dist/$(DARWIN) ./cmd
-
