@@ -5,7 +5,7 @@ Utility to mock events with configurable format, random metric range, and freque
 * [x] `stdout` - prints events to the console 
 * [x] `http` - posts events to specified URL ([how-to](doc/HTTP.md))
 * [x] `iothub` - sends events to Azure IoT Hub ([how-to](doc/Azure-IoT-Hub.md))
-* [x] `eventhub` - sends events to Azure Event Hub
+* [x] `eventhub` - sends events to Azure Event Hub ([how-to](doc/Azure-Event-Hub.md))
 * [ ] `iotcore` - sends events to GCP IoT Core 
 * [ ] `pubsub` - sends events to GCP Pub/Sub 
 * [ ] `sns` - sends events to AWS SNS
