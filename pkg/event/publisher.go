@@ -5,9 +5,10 @@ import "context"
 // ListPublishers list supported publishers
 func ListPublishers() []string {
 	return []string{
-		"stdout",
-		"iothub",
+		"eventhub",
 		"http",
+		"iothub",
+		"stdout",
 	}
 }
 

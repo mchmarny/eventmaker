@@ -8,6 +8,7 @@ import (
 
 	"github.com/mchmarny/eventmaker/pkg/event"
 	"github.com/mchmarny/eventmaker/pkg/mock"
+	"github.com/mchmarny/eventmaker/pkg/publish/eventhub"
 	"github.com/mchmarny/eventmaker/pkg/publish/http"
 	"github.com/mchmarny/eventmaker/pkg/publish/iothub"
 	"github.com/mchmarny/eventmaker/pkg/publish/stdout"
@@ -102,7 +103,33 @@ func main() {
 			}
 			pub, err := iothub.NewEventSender(ctx, connStr)
 			if err != nil {
-				return errors.Wrapf(err, "error creating iot hub publisher")
+				return errors.Wrapf(err, "error creating Azure IoT Hub publisher")
+			}
+			return execute(c, pub)
+		},
+	}
+
+	eventhubCmd := &cli.Command{
+		Name:  "eventhub",
+		Usage: "Mocks events and sends them to Azure Event Hub",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:     "connect",
+				Usage:    "connection string to Event Hub",
+				EnvVars:  []string{"CONN_STR", "EVENTHUB_CONN_STR"},
+				Required: true,
+			},
+			deviceFlag,
+			fileFlag,
+		},
+		Action: func(c *cli.Context) error {
+			connStr := c.String("connect")
+			if connStr == "" {
+				return errors.New("connect required")
+			}
+			pub, err := eventhub.NewEventSender(ctx, connStr)
+			if err != nil {
+				return errors.Wrapf(err, "error creating Azure Event Hub publisher")
 			}
 			return execute(c, pub)
 		},
@@ -123,6 +150,7 @@ func main() {
 			stdoutCmd,
 			httpCmd,
 			iothubCmd,
+			eventhubCmd,
 		},
 	}
 
