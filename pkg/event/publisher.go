@@ -8,6 +8,7 @@ func ListPublishers() []string {
 		"eventhub",
 		"http",
 		"iothub",
+		"pubsub",
 		"stdout",
 	}
 }

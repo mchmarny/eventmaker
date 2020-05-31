@@ -3,6 +3,7 @@ module github.com/mchmarny/eventmaker
 go 1.14
 
 require (
+	cloud.google.com/go/pubsub v1.4.0
 	github.com/Azure/azure-event-hubs-go/v3 v3.2.0
 	github.com/Azure/azure-sdk-for-go v42.3.0+incompatible // indirect
 	github.com/Azure/go-autorest/autorest v0.10.2 // indirect

@@ -11,6 +11,7 @@ import (
 	"github.com/mchmarny/eventmaker/pkg/publish/eventhub"
 	"github.com/mchmarny/eventmaker/pkg/publish/http"
 	"github.com/mchmarny/eventmaker/pkg/publish/iothub"
+	"github.com/mchmarny/eventmaker/pkg/publish/pubsub"
 	"github.com/mchmarny/eventmaker/pkg/publish/stdout"
 	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
@@ -135,6 +136,40 @@ func main() {
 		},
 	}
 
+	pubsubCmd := &cli.Command{
+		Name:  "pubsub",
+		Usage: "Mocks events and sends them to GCP PubSub",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:     "project",
+				Usage:    "ID fo the GCP project",
+				Required: true,
+			},
+			&cli.StringFlag{
+				Name:     "topic",
+				Usage:    "Name of the GCP PubSub topic",
+				Required: true,
+			},
+			deviceFlag,
+			fileFlag,
+		},
+		Action: func(c *cli.Context) error {
+			projectID := c.String("project")
+			if projectID == "" {
+				return errors.New("project required")
+			}
+			topicName := c.String("topic")
+			if topicName == "" {
+				return errors.New("topic required")
+			}
+			pub, err := pubsub.NewEventSender(ctx, projectID, topicName)
+			if err != nil {
+				return errors.Wrapf(err, "error creating GCP PubSub publisher")
+			}
+			return execute(c, pub)
+		},
+	}
+
 	// app
 	app := &cli.App{
 		Name:    "eventmaker",
@@ -151,6 +186,7 @@ func main() {
 			httpCmd,
 			iothubCmd,
 			eventhubCmd,
+			pubsubCmd,
 		},
 	}
 

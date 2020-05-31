@@ -1,5 +1,5 @@
 SERVICE_NAME     =eventmaker
-RELEASE_VERSION  =v0.5.1
+RELEASE_VERSION  =v0.5.2
 DOCKER_USERNAME ?=$(DOCKER_USER)
 
 .PHONY: mod test run build exec image show imagerun lint clean, tag
