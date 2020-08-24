@@ -1,11 +1,11 @@
 SERVICE_NAME     =eventmaker
-RELEASE_VERSION  =v0.5.2
+RELEASE_VERSION  =v0.6.1
 DOCKER_USERNAME ?=$(DOCKER_USER)
 
 .PHONY: mod test run build exec image show imagerun lint clean, tag
 all: test
 
-mod: ## Updates the go modules and vendors all dependancies 
+tidy: ## Updates the go modules and vendors all dependancies 
 	go mod tidy
 	go mod vendor
 
